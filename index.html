@@ -788,9 +788,199 @@
       }
     };
 
+    const STEM_FUTURE_TECH_BOARD_DATA = {
+      title: "STEM, AI & Future Tech Challenge",
+      categories: [
+        {
+          id: "stem_1",
+          name: "ARTIFICIAL INTELLIGENCE",
+          clues: [
+            { id: "s1_1", value: 200, question: "This 1950 milestone test assesses a machine's ability to exhibit intelligent behavior indistinguishable from a human.", answer: "The Turing Test", isDailyDouble: false },
+            { id: "s1_2", value: 400, question: "The 'T' in OpenAI's ChatGPT architecture stands for this deep learning model introduced by Google in 2017.", answer: "Transformer", isDailyDouble: false },
+            { id: "s1_3", value: 600, question: "In neural networks, this core mathematical operation computes the weighted sum of inputs plus bias.", answer: "Linear Combination (or Dot Product / Forward Pass)", isDailyDouble: false },
+            { id: "s1_4", value: 800, question: "DeepMind's program that famously defeated world champion Go player Lee Sedol in 2016 was called this.", answer: "AlphaGo", isDailyDouble: true },
+            { id: "s1_5", value: 1000, question: "This learning paradigm trains an agent to make a sequence of decisions by maximizing cumulative rewards.", answer: "Reinforcement Learning", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "stem_2",
+          name: "ASTROPHYSICS & COSMOS",
+          clues: [
+            { id: "s2_1", value: 200, question: "This theoretical boundary around a black hole marks the threshold where nothing, not even light, can escape.", answer: "Event Horizon", isDailyDouble: false },
+            { id: "s2_2", value: 400, question: "The cosmic microwave background radiation is the cooling thermal echo of this seminal cosmic event.", answer: "The Big Bang", isDailyDouble: false },
+            { id: "s2_3", value: 600, question: "Occupying roughly 68% of the universe's energy density, this mysterious force drives cosmic acceleration.", answer: "Dark Energy", isDailyDouble: false },
+            { id: "s2_4", value: 800, question: "In 2015, LIGO made history by detecting these subtle spacetime ripples produced by colliding black holes.", answer: "Gravitational Waves", isDailyDouble: false },
+            { id: "s2_5", value: 1000, question: "This theoretical upper mass limit for stable white dwarf stars is approximately 1.44 solar masses.", answer: "Chandrasekhar Limit", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "stem_3",
+          name: "COMPUTER ARCHITECTURE",
+          clues: [
+            { id: "s3_1", value: 200, question: "This high-speed volatile storage holds running applications directly accessed by the CPU.", answer: "RAM (Random Access Memory)", isDailyDouble: false },
+            { id: "s3_2", value: 400, question: "This observation by an Intel co-founder predicted that transistor counts on microchips double every two years.", answer: "Moore's Law", isDailyDouble: false },
+            { id: "s3_3", value: 600, question: "ARM and RISC-V processors rely on this acronym meaning computers with streamlined command sets.", answer: "RISC (Reduced Instruction Set Computer)", isDailyDouble: false },
+            { id: "s3_4", value: 800, question: "This intermediate high-speed memory level sits closest to the processor core, faster than L2 or L3.", answer: "L1 Cache", isDailyDouble: false },
+            { id: "s3_5", value: 1000, question: "In quantum computing, this basic unit of information can exist in a superposition of both 0 and 1 simultaneously.", answer: "Qubit (Quantum Bit)", isDailyDouble: true }
+          ]
+        },
+        {
+          id: "stem_4",
+          name: "BIOTECH & GENETICS",
+          clues: [
+            { id: "s4_1", value: 200, question: "Watson and Crick, alongside Rosalind Franklin's Photo 51, revealed this shape for the DNA molecule.", answer: "Double Helix", isDailyDouble: false },
+            { id: "s4_2", value: 400, question: "In messenger RNA, this nitrogenous base replaces thymine found in DNA.", answer: "Uracil", isDailyDouble: false },
+            { id: "s4_3", value: 600, question: "Jennifer Doudna and Emmanuelle Charpentier shared the 2020 Nobel Prize for developing this gene editor.", answer: "CRISPR-Cas9", isDailyDouble: false },
+            { id: "s4_4", value: 800, question: "These protective repetitive nucleotide sequences at the ends of chromosomes shorten with each cellular division.", answer: "Telomeres", isDailyDouble: false },
+            { id: "s4_5", value: 1000, question: "This laboratory technique rapidly replicates billions of copies of a specific DNA segment.", answer: "PCR (Polymerase Chain Reaction)", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "stem_5",
+          name: "PROGRAMMING LANGUAGES",
+          clues: [
+            { id: "s5_1", value: 200, question: "Created by Guido van Rossum in 1991, this language is named after a British comedy troupe.", answer: "Python", isDailyDouble: false },
+            { id: "s5_2", value: 400, question: "Brendan Eich famously developed the initial prototype of this web scripting language in just 10 days in 1995.", answer: "JavaScript", isDailyDouble: false },
+            { id: "s5_3", value: 600, question: "Created at Mozilla, this systems language prevents memory safety bugs through a strict borrow checker.", answer: "Rust", isDailyDouble: false },
+            { id: "s5_4", value: 800, question: "Dennis Ritchie created this foundational language in 1972 at Bell Labs to re-implement the Unix operating system.", answer: "C", isDailyDouble: false },
+            { id: "s5_5", value: 1000, question: "This functional language designed by Alonzo Church uses lambda calculus and was first implemented by John McCarthy.", answer: "Lisp", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "stem_6",
+          name: "WORLD-CHANGING INVENTIONS",
+          clues: [
+            { id: "s6_1", value: 200, question: "Guglielmo Marconi is credited with sending the first successful transatlantic wireless signal in this medium.", answer: "Radio", isDailyDouble: false },
+            { id: "s6_2", value: 400, question: "In 1879, Thomas Edison patented the first commercially viable incandescent version of this everyday item.", answer: "Light Bulb", isDailyDouble: false },
+            { id: "s6_3", value: 600, question: "Invented in 1947 at Bell Labs by Shockley, Bardeen, and Brattain, this component replaced bulky vacuum tubes.", answer: "The Transistor", isDailyDouble: false },
+            { id: "s6_4", value: 800, question: "This network developed by the US Department of Defense in 1969 became the foundational predecessor to the modern Internet.", answer: "ARPANET", isDailyDouble: false },
+            { id: "s6_5", value: 1000, question: "The blue LED, which enabled modern energy-efficient white LED displays, earned its Japanese inventors this prize in 2014.", answer: "Nobel Prize in Physics", isDailyDouble: false }
+          ]
+        }
+      ],
+      finalJeopardy: {
+        category: "PIONEERS OF COMPUTING",
+        question: "In 1843, she published an algorithm for Charles Babbage's Analytical Engine, becoming recognized as the first computer programmer.",
+        answer: "Ada Lovelace",
+        notes: "Daughter of poet Lord Byron."
+      }
+    };
+
+    const WORLD_CIVILIZATIONS_BOARD_DATA = {
+      title: "Chronicles of World Civilization",
+      categories: [
+        {
+          id: "civ_1",
+          name: "ANCIENT WONDERS",
+          clues: [
+            { id: "civ1_1", value: 200, question: "This is the only one of the Seven Wonders of the Ancient World that remains largely intact today.", answer: "The Great Pyramid of Giza", isDailyDouble: false },
+            { id: "civ1_2", value: 400, question: "Nebuchadnezzar II is legendary for creating these terraced, lush botanical gardens in Mesopotamia.", answer: "Hanging Gardens of Babylon", isDailyDouble: false },
+            { id: "civ1_3", value: 600, question: "Standing over 100 feet tall on a Greek island, this bronze statue honored the sun god Helios.", answer: "Colossus of Rhodes", isDailyDouble: false },
+            { id: "civ1_4", value: 800, question: "Built on the island of Pharos in Egypt, this towering structure guided mariners into Alexandria's port.", answer: "Lighthouse of Alexandria", isDailyDouble: true },
+            { id: "civ1_5", value: 1000, question: "Dedicated to the Greek goddess of the hunt, this magnificent temple in Ephesus was rebuilt three times.", answer: "Temple of Artemis", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "civ_2",
+          name: "IMPERIAL CAPITALS",
+          clues: [
+            { id: "civ2_1", value: 200, question: "This imperial Italian city was the heart of the Roman Empire and is dubbed the 'Eternal City'.", answer: "Rome", isDailyDouble: false },
+            { id: "civ2_2", value: 400, question: "Known as Byzantium and later Constantinople, this metropolis on the Bosphorus is today known as this.", answer: "Istanbul", isDailyDouble: false },
+            { id: "civ2_3", value: 600, question: "Cuzco served as the sacred capital of this vast pre-Columbian South American empire.", answer: "Inca Empire", isDailyDouble: false },
+            { id: "civ2_4", value: 800, question: "Tenochtitlan, founded on an island in Lake Texcoco in 1325, was the imperial capital of this civilization.", answer: "Aztec Empire", isDailyDouble: false },
+            { id: "civ2_5", value: 1000, question: "Persepolis was the ceremonial capital of this ancient empire ruled by Cyrus and Darius.", answer: "Achaemenid (Persian) Empire", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "civ_3",
+          name: "MEDIEVAL MONARCHS",
+          clues: [
+            { id: "civ3_1", value: 200, question: "Crowned on Christmas Day in 800 AD, this King of the Franks was named the first Holy Roman Emperor.", answer: "Charlemagne", isDailyDouble: false },
+            { id: "civ3_2", value: 400, question: "This French peasant teenager led royal troops during the Hundred Years' War before being canonized.", answer: "Joan of Arc", isDailyDouble: false },
+            { id: "civ3_3", value: 600, question: "English rebellious barons forced this king to affix his Great Seal to Magna Carta at Runnymede in 1215.", answer: "King John", isDailyDouble: false },
+            { id: "civ3_4", value: 800, question: "Reigning over the Mali Empire in the 14th century, his pilgrimage to Mecca made him history's wealthiest ruler.", answer: "Mansa Musa", isDailyDouble: false },
+            { id: "civ3_5", value: 1000, question: "This Mongol conqueror founded the Yuan Dynasty in China, ruling from Khanbaliq (Beijing).", answer: "Kublai Khan", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "civ_4",
+          name: "MARITIME EXPLORERS",
+          clues: [
+            { id: "civ4_1", value: 200, question: "In 1492, this Genoese navigator made landfall in the Bahamas under the Spanish crown.", answer: "Christopher Columbus", isDailyDouble: false },
+            { id: "civ4_2", value: 400, question: "This Portuguese explorer's expedition achieved the first recorded circumnavigation of the globe in 1522.", answer: "Ferdinand Magellan (and Juan Sebastián Elcano)", isDailyDouble: false },
+            { id: "civ4_3", value: 600, question: "In 1498, this explorer rounded Africa's Cape of Good Hope to establish an ocean trade route to India.", answer: "Vasco da Gama", isDailyDouble: false },
+            { id: "civ4_4", value: 800, question: "During the early Ming Dynasty, this Chinese admiral commanded seven massive naval treasure fleet expeditions.", answer: "Zheng He", isDailyDouble: false },
+            { id: "civ4_5", value: 1000, question: "This Norse explorer established a North American settlement at Vinland roughly five centuries before Columbus.", answer: "Leif Erikson", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "civ_5",
+          name: "HISTORIC TREATIES",
+          clues: [
+            { id: "civ5_1", value: 200, question: "Signed in 1919 at the Hall of Mirrors, this treaty formally ended World War I between Germany and the Allies.", answer: "Treaty of Versailles", isDailyDouble: false },
+            { id: "civ5_2", value: 400, question: "The 1783 Treaty of Paris formally recognized the independence of this newly declared nation.", answer: "The United States of America", isDailyDouble: false },
+            { id: "civ5_3", value: 600, question: "This 1494 agreement mediated by Pope Alexander VI divided newly discovered lands between Spain and Portugal.", answer: "Treaty of Tordesillas", isDailyDouble: false },
+            { id: "civ5_4", value: 800, question: "The 1842 Treaty of Nanking concluded the First Opium War and ceded this island territory to Britain.", answer: "Hong Kong", isDailyDouble: true },
+            { id: "civ5_5", value: 1000, question: "Signed in 1848, this treaty ended the Mexican-American War and established the Rio Grande border.", answer: "Treaty of Guadalupe Hidalgo", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "civ_6",
+          name: "RENAISSANCE MASTERS",
+          clues: [
+            { id: "civ6_1", value: 200, question: "He painted the Mona Lisa and designed elaborate conceptual sketches for flying machines.", answer: "Leonardo da Vinci", isDailyDouble: false },
+            { id: "civ6_2", value: 400, question: "He sculpted the 17-foot marble statue of David and frescoed the ceiling of the Sistine Chapel.", answer: "Michelangelo", isDailyDouble: false },
+            { id: "civ6_3", value: 600, question: "This Florentine master painted The Birth of Venus and Primavera.", answer: "Sandro Botticelli", isDailyDouble: false },
+            { id: "civ6_4", value: 800, question: "His monumental Renaissance fresco 'The School of Athens' portrays Plato and Aristotle in debate.", answer: "Raphael", isDailyDouble: false },
+            { id: "civ6_5", value: 1000, question: "This goldsmith and architect designed the majestic self-supporting brick dome of Florence Cathedral.", answer: "Filippo Brunelleschi", isDailyDouble: false }
+          ]
+        }
+      ],
+      finalJeopardy: {
+        category: "ANCIENT ARCHAEOLOGY",
+        question: "In 1974, local farmers digging a well near Xi'an accidentally uncovered thousands of life-sized terracotta warriors guarding this emperor's tomb.",
+        answer: "Qin Shi Huang",
+        notes: "The first emperor of a unified China."
+      }
+    };
+
     const BUILT_IN_PRESETS = [
-      { id: 'preset_deluxe', name: 'Jeopardy! Deluxe Tournament (Default)', data: INITIAL_BOARD_DATA },
-      { id: 'preset_pop_culture', name: 'Pop Culture & Gaming Showcase', data: POP_CULTURE_BOARD_DATA }
+      {
+        id: 'preset_deluxe',
+        name: 'Jeopardy! Deluxe Tournament (Default)',
+        tag: 'General Trivia',
+        author: 'Studio Archive',
+        difficulty: 'Standard',
+        description: 'Balanced broadcast tournament covering Science, World History, Cinema, Gaming, Geography, and Literature.',
+        data: INITIAL_BOARD_DATA
+      },
+      {
+        id: 'preset_pop_culture',
+        name: 'Pop Culture & Gaming Showcase',
+        tag: 'Pop Culture',
+        author: 'Studio Archive',
+        difficulty: 'Casual / Fun',
+        description: 'Blockbusters, Gaming Icons, Hit Music, TV Classics, Food & Drink, and Famous Inventions.',
+        data: POP_CULTURE_BOARD_DATA
+      },
+      {
+        id: 'repo_stem',
+        name: 'STEM, AI & Future Tech Challenge',
+        tag: 'STEM & Sci-Fi',
+        author: 'Curated Repository',
+        difficulty: 'Advanced',
+        description: 'Artificial Intelligence, Astrophysics, Computer Architecture, Biotech, Code, and Innovations.',
+        data: STEM_FUTURE_TECH_BOARD_DATA
+      },
+      {
+        id: 'repo_history',
+        name: 'Chronicles of World Civilization',
+        tag: 'History & Arts',
+        author: 'Curated Repository',
+        difficulty: 'Tournament Grade',
+        description: 'Ancient Wonders, Imperial Capitals, Medieval Monarchs, Maritime Explorers, Treaties, and Renaissance Masters.',
+        data: WORLD_CIVILIZATIONS_BOARD_DATA
+      }
     ];
 
     // Clean strings for solo practice fuzzy-matching
@@ -829,8 +1019,14 @@
       // JSON Board Library & Selection State
       const jsonBoardFileInputRef = useRef(null);
       const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
+      const [boardModalTab, setBoardModalTab] = useState('repository'); // 'repository' | 'saved' | 'url'
       const [saveAsNameInput, setSaveAsNameInput] = useState("");
       
+      // Repository URL Fetcher State
+      const [repoFetchUrl, setRepoFetchUrl] = useState("");
+      const [isFetchingRepo, setIsFetchingRepo] = useState(false);
+      const [repoFetchError, setRepoFetchError] = useState(null);
+
       const [savedBoards, setSavedBoards] = useState(() => {
         const saved = localStorage.getItem('jeopardy_saved_boards_collection_v2');
         if (saved) {
@@ -1194,6 +1390,58 @@
         soundEngine.playBoardReveal();
         setIsBoardModalOpen(false);
         showToast(`Loaded Board: "${boardItem.name}"`);
+      };
+
+      const handleFetchFromRepoUrl = async (customUrl = null) => {
+        let targetUrl = (customUrl || repoFetchUrl).trim();
+        if (!targetUrl) {
+          setRepoFetchError("Please enter a valid file URL or GitHub repository path.");
+          return;
+        }
+
+        // Automatic GitHub blob to raw.githubusercontent.com conversion
+        if (targetUrl.includes("github.com") && targetUrl.includes("/blob/")) {
+          targetUrl = targetUrl
+            .replace("github.com", "raw.githubusercontent.com")
+            .replace("/blob/", "/");
+        }
+
+        setIsFetchingRepo(true);
+        setRepoFetchError(null);
+
+        try {
+          const res = await fetch(targetUrl);
+          if (!res.ok) {
+            throw new Error(`HTTP Error ${res.status}: Failed to reach ${targetUrl}`);
+          }
+          const parsed = await res.json();
+
+          if (!parsed.categories || !Array.isArray(parsed.categories)) {
+            throw new Error("Invalid format: The JSON must contain a 'categories' array of 6 categories.");
+          }
+
+          const boardTitle = parsed.title || targetUrl.split("/").pop().replace(/\.json$/i, "") || "Repository Board";
+          const newBoardId = 'repo_remote_' + Date.now();
+          const remoteBoardItem = {
+            id: newBoardId,
+            name: boardTitle,
+            tag: 'Remote Repo',
+            author: targetUrl.includes("github") ? 'GitHub' : 'Web Repo',
+            difficulty: 'Custom',
+            description: `Fetched from: ${targetUrl}`,
+            data: { ...parsed, title: boardTitle }
+          };
+
+          const updatedList = [...savedBoards, remoteBoardItem];
+          setSavedBoards(updatedList);
+          handleSelectBoard(remoteBoardItem);
+          setRepoFetchUrl("");
+          setIsFetchingRepo(false);
+          showToast(`Successfully imported and loaded "${boardTitle}" from repository!`);
+        } catch (err) {
+          setIsFetchingRepo(false);
+          setRepoFetchError(err.message || "Failed to download board from the repository.");
+        }
       };
 
       const handleSaveCurrentAs = (e) => {
@@ -2087,14 +2335,13 @@
           {/* Board Selector & Library Modal */}
           {isBoardModalOpen && (
             <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
-              <div className="w-full max-w-3xl bg-gradient-to-b from-slate-900 via-blue-950 to-slate-950 border-3 border-blue-600/80 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col justify-between max-h-[90vh] overflow-hidden">
-                {/* Modal Header */}
-                <div className="flex items-center justify-between border-b border-blue-900/80 pb-4">
+              <div className="w-full max-w-4xl bg-gradient-to-b from-slate-900 via-blue-950 to-slate-950 border-3 border-blue-600/80 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col justify-between max-h-[92vh] overflow-hidden">
+                <div className="flex items-center justify-between border-b border-blue-900/80 pb-3">
                   <div>
                     <h3 className="text-xl font-board font-black text-amber-300 uppercase tracking-wider flex items-center space-x-2">
-                      <span>🗂️ Board Library & Selector</span>
+                      <span>🗂️ Board Library & Repository Selector</span>
                     </h3>
-                    <p className="text-xs text-blue-300">Choose a game board, upload a JSON file, or save your current edits.</p>
+                    <p className="text-xs text-blue-300">Choose from curated repository boards, load via GitHub URL, or import your local JSON files.</p>
                   </div>
                   <button
                     onClick={() => setIsBoardModalOpen(false)}
@@ -2104,87 +2351,310 @@
                   </button>
                 </div>
 
-                {/* Modal Content / Boards List */}
-                <div className="my-4 overflow-y-auto space-y-3 pr-1">
-                  <div className="flex items-center justify-between px-1">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Available Boards ({savedBoards.length})</span>
-                    <button
-                      onClick={() => jsonBoardFileInputRef.current?.click()}
-                      className="text-xs bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700 px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1.5 transition"
-                    >
-                      <span>📂 Upload .JSON File</span>
-                    </button>
-                  </div>
+                {/* Sub-Navigation Tabs */}
+                <div className="flex items-center space-x-2 border-b border-slate-800 pt-3 pb-2 text-xs font-bold">
+                  <button
+                    onClick={() => setBoardModalTab('repository')}
+                    className={`px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 ${
+                      boardModalTab === 'repository'
+                        ? 'bg-amber-500 text-slate-950 shadow-md font-black glow-gold'
+                        : 'bg-slate-800 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    <span>🏛️ Repository Catalog</span>
+                    <span className="bg-slate-950/40 text-[10px] px-1.5 py-0.5 rounded-full font-mono">
+                      {BUILT_IN_PRESETS.length}
+                    </span>
+                  </button>
 
-                  {savedBoards.map((b) => {
-                    const isSelected = activeBoardId === b.id;
-                    const isPreset = b.id.startsWith('preset_');
+                  <button
+                    onClick={() => setBoardModalTab('url')}
+                    className={`px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 ${
+                      boardModalTab === 'url'
+                        ? 'bg-blue-600 text-white shadow-md font-black'
+                        : 'bg-slate-800 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    <span>🌐 Fetch from GitHub / URL</span>
+                  </button>
 
-                    return (
-                      <div
-                        key={b.id}
-                        className={`p-3.5 rounded-2xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
-                          isSelected
-                            ? 'bg-blue-900/50 border-amber-400 ring-2 ring-amber-400/40 shadow-lg'
-                            : 'bg-slate-900/80 border-slate-800 hover:border-blue-700'
-                        }`}
-                      >
-                        <div className="space-y-1">
-                          <div className="flex items-center space-x-2">
-                            <span className="text-sm font-bold text-white">{b.name}</span>
-                            {isPreset ? (
-                              <span className="text-[10px] bg-blue-950 text-blue-300 border border-blue-700 px-2 py-0.5 rounded-full font-semibold">Preset</span>
-                            ) : (
-                              <span className="text-[10px] bg-amber-950 text-amber-300 border border-amber-700 px-2 py-0.5 rounded-full font-semibold">Custom</span>
-                            )}
-                            {isSelected && (
-                              <span className="text-[10px] bg-emerald-500 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase">Active</span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-slate-400 flex flex-wrap gap-1">
-                            <span>Categories:</span>
-                            <span className="text-slate-300">
-                              {b.data?.categories?.map(c => c.name).slice(0, 4).join(', ') || 'No categories'}
-                              {b.data?.categories?.length > 4 ? ` +${b.data.categories.length - 4} more` : ''}
-                            </span>
-                          </div>
-                        </div>
+                  <button
+                    onClick={() => setBoardModalTab('saved')}
+                    className={`px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 ${
+                      boardModalTab === 'saved'
+                        ? 'bg-indigo-600 text-white shadow-md font-black'
+                        : 'bg-slate-800 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    <span>📁 Custom & Uploaded ({savedBoards.filter(b => !b.id.startsWith('preset_') && !b.id.startsWith('repo_')).length})</span>
+                  </button>
+                </div>
 
-                        <div className="flex items-center space-x-2 shrink-0 w-full sm:w-auto justify-end">
-                          <button
-                            onClick={() => exportSpecificBoardJSON(b)}
-                            className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition"
-                            title="Download board JSON file"
-                          >
-                            📥 JSON
-                          </button>
+                {/* TAB 1: CURATED REPOSITORY CATALOG */}
+                {boardModalTab === 'repository' && (
+                  <div className="my-3 overflow-y-auto space-y-3 pr-1">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        Official Repository Boards (Verified & Tourney-Ready)
+                      </span>
+                      <span className="text-[11px] text-amber-300 font-mono">Click 'Select & Play' to load</span>
+                    </div>
 
-                          {!isPreset && (
-                            <button
-                              onClick={() => handleDeleteBoard(b.id)}
-                              className="px-2.5 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-800 text-red-300 text-xs font-semibold border border-red-800 transition"
-                              title="Delete board"
-                            >
-                              🗑️
-                            </button>
-                          )}
-
-                          <button
-                            onClick={() => handleSelectBoard(b)}
-                            disabled={isSelected}
-                            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition shadow ${
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {BUILT_IN_PRESETS.map((b) => {
+                        const isSelected = activeBoardId === b.id;
+                        return (
+                          <div
+                            key={b.id}
+                            className={`p-4 rounded-2xl border transition-all flex flex-col justify-between space-y-3 ${
                               isSelected
-                                ? 'bg-emerald-600 text-white cursor-default'
-                                : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                                ? 'bg-blue-900/60 border-amber-400 ring-2 ring-amber-400/40 shadow-xl'
+                                : 'bg-slate-900/90 border-slate-800 hover:border-blue-700'
                             }`}
                           >
-                            {isSelected ? '✓ Loaded' : 'Select & Play'}
-                          </button>
-                        </div>
+                            <div className="space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase bg-blue-950 text-blue-300 border border-blue-800">
+                                  {b.tag || "Repository"}
+                                </span>
+                                {isSelected ? (
+                                  <span className="text-[10px] bg-emerald-500 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase">
+                                    ✓ Currently Loaded
+                                  </span>
+                                ) : (
+                                  <span className="text-[10px] text-slate-400 font-mono">
+                                    {b.difficulty || "Standard"}
+                                  </span>
+                                )}
+                              </div>
+
+                              <h4 className="text-sm sm:text-base font-board font-black text-white leading-tight text-gold-shadow">
+                                {b.name}
+                              </h4>
+
+                              {b.description && (
+                                <p className="text-[11px] text-slate-300 line-clamp-2 leading-relaxed">
+                                  {b.description}
+                                </p>
+                              )}
+
+                              <div className="pt-1.5 flex flex-wrap gap-1">
+                                {b.data?.categories?.map((cat, cIdx) => (
+                                  <span key={cat.id || cIdx} className="text-[9px] bg-slate-950 text-amber-300 border border-slate-800 px-1.5 py-0.5 rounded font-mono">
+                                    {cat.name}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                              <span className="text-[10px] text-slate-400">
+                                Final: <strong className="text-white">{b.data?.finalJeopardy?.category || "Configured"}</strong>
+                              </span>
+
+                              <div className="flex items-center space-x-2">
+                                <button
+                                  onClick={() => exportSpecificBoardJSON(b)}
+                                  className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition"
+                                  title="Export JSON"
+                                >
+                                  📥
+                                </button>
+                                <button
+                                  onClick={() => handleSelectBoard(b)}
+                                  disabled={isSelected}
+                                  className={`px-3.5 py-1 rounded-lg text-xs font-bold transition shadow ${
+                                    isSelected
+                                      ? 'bg-emerald-600 text-white cursor-default'
+                                      : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                                  }`}
+                                >
+                                  {isSelected ? '✓ Loaded' : 'Select & Play'}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 2: FETCH FROM GITHUB OR REMOTE REPO */}
+                {boardModalTab === 'url' && (
+                  <div className="my-3 overflow-y-auto space-y-4 pr-1">
+                    <div className="bg-slate-900/90 border border-blue-800/60 p-4 rounded-2xl space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">🌐</span>
+                        <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+                          Fetch Board JSON from Any Public Repository or Web Link
+                        </h4>
                       </div>
-                    );
-                  })}
-                </div>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        Paste a direct URL to any raw Jeopardy board JSON file on GitHub, Netlify, Amazon S3, or your own self-hosted server.
+                        If you paste a standard GitHub blob link (e.g. <code className="bg-slate-950 text-amber-300 px-1 py-0.5 rounded">github.com/.../blob/main/board.json</code>), it will automatically convert to the raw link!
+                      </p>
+
+                      <div className="flex flex-col sm:flex-row items-stretch gap-2 pt-1">
+                        <input
+                          type="url"
+                          placeholder="https://raw.githubusercontent.com/user/repo/main/boards/my_game.json or ./boards/round1.json"
+                          value={repoFetchUrl}
+                          onChange={(e) => setRepoFetchUrl(e.target.value)}
+                          className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 font-mono"
+                        />
+                        <button
+                          onClick={() => handleFetchFromRepoUrl()}
+                          disabled={isFetchingRepo}
+                          className="px-5 py-2 bg-gradient-to-r from-amber-500 to-yellow-400 hover:brightness-110 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg disabled:opacity-50 flex items-center justify-center space-x-1.5 shrink-0"
+                        >
+                          {isFetchingRepo ? (
+                            <>
+                              <span className="animate-spin text-sm">⏳</span>
+                              <span>Fetching...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>⬇️ Fetch & Play</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {repoFetchError && (
+                        <div className="p-3 bg-red-950/80 border border-red-700 rounded-xl text-xs text-red-300 font-medium">
+                          <strong>Failed to fetch board:</strong> {repoFetchError}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Quick Repository Samples / Relative Path Presets */}
+                    <div className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-2.5">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                        Quick Try / Local Repository Paths:
+                      </span>
+                      <p className="text-[11px] text-slate-400">
+                        If you host a <code className="text-amber-300 bg-slate-950 px-1 py-0.5 rounded">boards/</code> directory alongside your index.html, click below or enter relative paths:
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        <button
+                          onClick={() => {
+                            setRepoFetchUrl("./boards/deluxe_board.json");
+                            handleFetchFromRepoUrl("./boards/deluxe_board.json");
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-800 text-blue-300 border border-slate-700 text-xs font-mono transition"
+                        >
+                          📂 ./boards/deluxe_board.json
+                        </button>
+                        <button
+                          onClick={() => {
+                            setRepoFetchUrl("./boards/science_trivia.json");
+                            handleFetchFromRepoUrl("./boards/science_trivia.json");
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-800 text-blue-300 border border-slate-700 text-xs font-mono transition"
+                        >
+                          📂 ./boards/science_trivia.json
+                        </button>
+                        <button
+                          onClick={() => {
+                            setRepoFetchUrl("./boards/final_showdown.json");
+                            handleFetchFromRepoUrl("./boards/final_showdown.json");
+                          }}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-800 text-blue-300 border border-slate-700 text-xs font-mono transition"
+                        >
+                          📂 ./boards/final_showdown.json
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 3: CUSTOM SAVED & UPLOADED BOARDS */}
+                {boardModalTab === 'saved' && (
+                  <div className="my-3 overflow-y-auto space-y-3 pr-1">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                        My Saved Boards ({savedBoards.length})
+                      </span>
+                      <button
+                        onClick={() => jsonBoardFileInputRef.current?.click()}
+                        className="text-xs bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700 px-3 py-1.5 rounded-xl font-bold flex items-center space-x-1.5 transition"
+                      >
+                        <span>📂 Upload .JSON File</span>
+                      </button>
+                    </div>
+
+                    {savedBoards.map((b) => {
+                      const isSelected = activeBoardId === b.id;
+                      const isPreset = b.id.startsWith('preset_') || b.id.startsWith('repo_');
+
+                      return (
+                        <div
+                          key={b.id}
+                          className={`p-3.5 rounded-2xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
+                            isSelected
+                              ? 'bg-blue-900/50 border-amber-400 ring-2 ring-amber-400/40 shadow-lg'
+                              : 'bg-slate-900/80 border-slate-800 hover:border-blue-700'
+                          }`}
+                        >
+                          <div className="space-y-1">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-sm font-bold text-white">{b.name}</span>
+                              {isPreset ? (
+                                <span className="text-[10px] bg-blue-950 text-blue-300 border border-blue-700 px-2 py-0.5 rounded-full font-semibold">Repository Preset</span>
+                              ) : (
+                                <span className="text-[10px] bg-amber-950 text-amber-300 border border-amber-700 px-2 py-0.5 rounded-full font-semibold">Custom</span>
+                              )}
+                              {isSelected && (
+                                <span className="text-[10px] bg-emerald-500 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase">Active</span>
+                              )}
+                            </div>
+                            <div className="text-[11px] text-slate-400 flex flex-wrap gap-1">
+                              <span>Categories:</span>
+                              <span className="text-slate-300">
+                                {b.data?.categories?.map(c => c.name).slice(0, 4).join(', ') || 'No categories'}
+                                {b.data?.categories?.length > 4 ? ` +${b.data.categories.length - 4} more` : ''}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center space-x-2 shrink-0 w-full sm:w-auto justify-end">
+                            <button
+                              onClick={() => exportSpecificBoardJSON(b)}
+                              className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition"
+                              title="Download board JSON file"
+                            >
+                              📥 JSON
+                            </button>
+
+                            {!isPreset && (
+                              <button
+                                onClick={() => handleDeleteBoard(b.id)}
+                                className="px-2.5 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-800 text-red-300 text-xs font-semibold border border-red-800 transition"
+                                title="Delete board"
+                              >
+                                🗑️
+                              </button>
+                            )}
+
+                            <button
+                              onClick={() => handleSelectBoard(b)}
+                              disabled={isSelected}
+                              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition shadow ${
+                                isSelected
+                                  ? 'bg-emerald-600 text-white cursor-default'
+                                  : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+                              }`}
+                            >
+                              {isSelected ? '✓ Loaded' : 'Select & Play'}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Save Current Board As section */}
                 <div className="border-t border-blue-900/80 pt-4 mt-2">
@@ -2208,7 +2678,6 @@
             </div>
           )}
 
-          {}
           {/* Countdown Timer Duration Configuration Modal */}
           {isTimerSettingsModalOpen && (
             <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
