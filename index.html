@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jeopardy! Studio Live - Deluxe TV Edition</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Bebas Neue, Oswald, PT Serif, Cinzel, Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;600;700;900&family=Oswald:wght@500;700&family=PT+Serif:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  
+  <!-- React 18 & ReactDOM CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel Standalone for in-browser JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #020617;
+    }
+    .font-board {
+      font-family: 'Oswald', Impact, sans-serif;
+      letter-spacing: 0.05em;
+    }
+    .font-title {
+      font-family: 'Cinzel', serif;
+    }
+    .font-clue {
+      font-family: 'PT Serif', Georgia, serif;
+    }
+    
+    /* Authentic TV Studio Lighting & Glow FX */
+    .glow-gold {
+      box-shadow: 0 0 25px rgba(234, 179, 8, 0.45), 0 0 50px rgba(234, 179, 8, 0.15);
+    }
+    .glow-blue {
+      box-shadow: 0 0 30px rgba(6, 12, 233, 0.6), inset 0 0 20px rgba(59, 130, 246, 0.2);
+    }
+    .text-gold-shadow {
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9), 0 0 12px rgba(250, 204, 21, 0.45);
+    }
+    .text-clue-shadow {
+      text-shadow: 0 3px 6px rgba(0, 0, 0, 0.95);
+    }
+
+    /* Jeopardy Board Matrix Card Gradients */
+    .jeopardy-tile {
+      background: linear-gradient(180deg, #0b1596 0%, #060ce9 45%, #03086e 100%);
+    }
+    .jeopardy-tile:hover {
+      background: linear-gradient(180deg, #1825c2 0%, #0d15ff 45%, #050a99 100%);
+    }
+    .jeopardy-header {
+      background: linear-gradient(180deg, #060b5c 0%, #040842 100%);
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+      border: 1px solid #334155;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen overflow-x-hidden selection:bg-amber-500 selection:text-slate-950">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+    /**
+     * Broadcast Studio High-Fidelity Web Audio & Real Track Synthesizer
+     * Supports real external audio files (local 'think.mp3', drag-and-drop/uploaded audio files)
+     * with an upgraded polyphonic broadcast swing synthesizer fallback.
+     */
+    class JeopardyStudioAudioEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.volume = 0.6;
+        this.isPlayingTheme = false;
+        this.activeThemeNodes = [];
+        this.themeLoopTimer = null;
+        this.masterGain = null;
+        this.compressor = null;
+
+        // Real audio element configuration
+        this.realAudio = new Audio();
+        this.realAudio.preload = 'auto';
+        this.hasRealAudio = false;
+        this.realAudioName = null;
+        this.useRealAudio = true; // Default to real audio if available
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+            
+            // Broadcast-grade master dynamic limiter/compressor for warm, pop-free sound
+            this.compressor = this.ctx.createDynamicsCompressor();
+            this.compressor.threshold.setValueAtTime(-14, this.ctx.currentTime);
+            this.compressor.knee.setValueAtTime(12, this.ctx.currentTime);
+            this.compressor.ratio.setValueAtTime(4.5, this.ctx.currentTime);
+            this.compressor.attack.setValueAtTime(0.003, this.ctx.currentTime);
+            this.compressor.release.setValueAtTime(0.18, this.ctx.currentTime);
+
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(this.muted ? 0 : this.volume, this.ctx.currentTime);
+
+            this.masterGain.connect(this.compressor);
+            this.compressor.connect(this.ctx.destination);
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      // Load real audio from file or URL
+      setRealAudioSource(url, name = "think.mp3") {
+        try {
+          this.realAudio.pause();
+          this.realAudio.src = url;
+          this.realAudioName = name;
+          this.hasRealAudio = true;
+          this.useRealAudio = true;
+          this.realAudio.volume = this.muted ? 0 : this.volume;
+          this.realAudio.load();
+        } catch (e) {
+          console.warn("Could not load real audio file", e);
+        }
+      }
+
+      setVolume(val) {
+        this.volume = Math.max(0, Math.min(1, val));
+        if (this.realAudio) {
+          this.realAudio.volume = this.muted ? 0 : this.volume;
+        }
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setTargetAtTime(
+            this.muted ? 0 : this.volume,
+            this.ctx.currentTime,
+            0.02
+          );
+        }
+      }
+
+      // Pleasant TV Board Reveal harp-like glissando
+      playBoardReveal() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          this.playBellTone(freq, this.ctx.currentTime + idx * 0.055, 0.45, 0.18);
+        });
+      }
+
+      // Clue selection chime with studio chime overtone
+      playClueSelect() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        this.playBellTone(587.33, now, 0.2, 0.22);       // D5
+        this.playBellTone(1174.66, now + 0.06, 0.35, 0.26); // D6
+      }
+
+      // Crisp studio contestant buzzer ding
+      playBuzz() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        this.playBellTone(880, now, 0.18, 0.32);
+        this.playBellTone(1320, now + 0.02, 0.28, 0.28);
+      }
+
+      // Rich studio 3-note celebration chime
+      playCorrect() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        this.playBellTone(523.25, now, 0.3, 0.22);        // C5
+        this.playBellTone(659.25, now + 0.09, 0.35, 0.24); // E5
+        this.playBellTone(1046.50, now + 0.18, 0.75, 0.32); // C6 shimmer
+        this.playBellTone(2093.00, now + 0.20, 0.5, 0.1);   // High bell harmonic
+      }
+
+      // Authentic TV show wrong answer buzzer: filtered low-frequency rumble (smooth & punchy without harsh clicks)
+      playWrong() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sawtooth';
+        osc2.type = 'square';
+        osc1.frequency.setValueAtTime(115, now);
+        osc2.frequency.setValueAtTime(92, now);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(550, now);
+        filter.Q.setValueAtTime(2.5, now);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(0.32, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.38);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.4);
+        osc2.stop(now + 0.4);
+      }
+
+      // Daily Double classic studio fanfare with warm brass/organ chords
+      playDailyDouble() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const chords = [
+          { time: 0.0, freqs: [392.00, 493.88], dur: 0.12 },
+          { time: 0.13, freqs: [392.00, 493.88], dur: 0.12 },
+          { time: 0.26, freqs: [392.00, 493.88], dur: 0.14 },
+          { time: 0.42, freqs: [523.25, 659.25], dur: 0.36 },
+          { time: 0.82, freqs: [440.00, 554.37], dur: 0.15 },
+          { time: 0.98, freqs: [523.25, 659.25], dur: 0.15 },
+          { time: 1.15, freqs: [659.25, 783.99, 1046.50], dur: 0.85 }
+        ];
+
+        chords.forEach(c => {
+          c.freqs.forEach(f => {
+            this.playWarmBrassNote(f, now + c.time, c.dur, 0.22);
+          });
+        });
+      }
+
+      // Soft wooden studio timer tick
+      playTick() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(820, now);
+        osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400, now);
+
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc.start(now);
+        osc.stop(now + 0.04);
+      }
+
+      // Soft timeout double beep
+      playTimeout() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        this.playWarmBrassNote(196, now, 0.2, 0.25);
+        this.playWarmBrassNote(146.83, now + 0.18, 0.35, 0.28);
+      }
+
+      // Mystery stinger for Final Jeopardy
+      playFinalStinger() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = [220, 277.18, 329.63, 440, 415.30, 329.63, 277.18, 220];
+        notes.forEach((freq, idx) => {
+          this.playBellTone(freq, now + idx * 0.16, 0.45, 0.2);
+        });
+      }
+
+      // Bell/chime voice with smooth ADSR and overtone
+      playBellTone(freq, startTime, duration, velocity = 0.2) {
+        if (!this.ctx) return;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(freq, startTime);
+        osc2.frequency.setValueAtTime(freq * 2.005, startTime); // subtle harmonic sparkle
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(freq * 4, startTime);
+        filter.frequency.exponentialRampToValueAtTime(freq * 1.5, startTime + duration);
+
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(velocity, startTime + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc1.start(startTime);
+        osc2.start(startTime);
+        osc1.stop(startTime + duration + 0.05);
+        osc2.stop(startTime + duration + 0.05);
+      }
+
+      // Warm acoustic marimba mallet voice for the iconic "Think!" theme
+      playMarimba(freq, startTime, duration, velocity = 0.24) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const overtoneOsc = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, startTime);
+
+        // Wood mallet tap transient
+        overtoneOsc.type = 'sine';
+        overtoneOsc.frequency.setValueAtTime(freq * 3.98, startTime);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(Math.min(freq * 4.5, 4500), startTime);
+        filter.frequency.exponentialRampToValueAtTime(freq * 1.2, startTime + duration * 0.8);
+        filter.Q.setValueAtTime(1.8, startTime);
+
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(velocity, startTime + 0.008);
+        gain.gain.exponentialRampToValueAtTime(velocity * 0.25, startTime + 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        osc.connect(filter);
+        overtoneOsc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc.start(startTime);
+        overtoneOsc.start(startTime);
+        osc.stop(startTime + duration);
+        overtoneOsc.stop(startTime + Math.min(0.06, duration));
+
+        this.activeThemeNodes.push(osc, overtoneOsc, gain);
+      }
+
+      // Round plucked acoustic bass voice
+      playBass(freq, startTime, duration, velocity = 0.2) {
+        if (!this.ctx) return;
+        const osc1 = this.ctx.createOscillator();
+        const osc2 = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        const gain = this.ctx.createGain();
+
+        osc1.type = 'sine';
+        osc2.type = 'triangle';
+        osc1.frequency.setValueAtTime(freq, startTime);
+        osc2.frequency.setValueAtTime(freq, startTime);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(650, startTime);
+        filter.frequency.exponentialRampToValueAtTime(180, startTime + duration);
+
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(velocity, startTime + 0.012);
+        gain.gain.exponentialRampToValueAtTime(velocity * 0.45, startTime + 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        osc1.connect(filter);
+        osc2.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc1.start(startTime);
+        osc2.start(startTime);
+        osc1.stop(startTime + duration);
+        osc2.stop(startTime + duration);
+
+        this.activeThemeNodes.push(osc1, osc2, gain);
+      }
+
+      // Warm brass/pad note
+      playWarmBrassNote(freq, startTime, duration, velocity = 0.2) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, startTime);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800, startTime);
+        filter.frequency.linearRampToValueAtTime(2200, startTime + 0.08);
+        filter.frequency.exponentialRampToValueAtTime(600, startTime + duration);
+
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(velocity, startTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc.start(startTime);
+        osc.stop(startTime + duration + 0.02);
+      }
+
+      // Percussion click/rimshot for the authentic 1980s/1990s TV syncopation
+      playPercussionBeat(startTime, velocity = 0.08) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        const filter = this.ctx.createBiquadFilter();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1400, startTime);
+        osc.frequency.exponentialRampToValueAtTime(120, startTime + 0.03);
+
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1800, startTime);
+        filter.Q.setValueAtTime(3.0, startTime);
+
+        gain.gain.setValueAtTime(velocity, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.035);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc.start(startTime);
+        osc.stop(startTime + 0.04);
+        this.activeThemeNodes.push(osc, gain);
+      }
+
+      // Play either the real audio file or the synthesized TV broadcast theme
+      startJeopardyTheme(onComplete = null) {
+        this.stopJeopardyTheme();
+
+        // 1. If real audio is loaded and user wants real audio, play actual audio recording
+        if (this.useRealAudio && this.hasRealAudio && this.realAudio) {
+          try {
+            this.realAudio.currentTime = 0;
+            this.realAudio.volume = this.muted ? 0 : this.volume;
+            this.isPlayingTheme = true;
+
+            const playPromise = this.realAudio.play();
+            if (playPromise !== undefined) {
+              playPromise.catch((err) => {
+                console.warn("Real audio autoplay was blocked or file missing; falling back to synthesizer.", err);
+                this.startSynthTheme(onComplete);
+              });
+            }
+
+            this.realAudio.onended = () => {
+              this.isPlayingTheme = false;
+              if (onComplete) onComplete();
+            };
+            return;
+          } catch (e) {
+            console.warn("Real audio playback failed, falling back to synth", e);
+          }
+        }
+
+        // 2. Synthesized arrangement fallback
+        this.startSynthTheme(onComplete);
+      }
+
+      // Broadcast TV live synthesizer arrangement
+      startSynthTheme(onComplete = null) {
+        this.init();
+        if (!this.ctx) return;
+        this.isPlayingTheme = true;
+
+        const startTime = this.ctx.currentTime + 0.05;
+        const C3 = 130.81, D3 = 146.83, E3 = 164.81, F3 = 174.61, G3 = 196.00, A3 = 220.00, Bb3 = 233.08, B3 = 246.94;
+        const C4 = 261.63, D4 = 293.66, E4 = 329.63, F4 = 349.23, G4 = 392.00, A4 = 440.00, Bb4 = 466.16, B4 = 493.88;
+        const C5 = 523.25, D5 = 587.33, E5 = 659.25, F5 = 698.46, G5 = 783.99, A5 = 880.00, B5 = 987.77;
+
+        // Sample-accurate marimba melody
+        const melody = [
+          // Phrase 1
+          { f: C5, d: 0.32, t: 0.0 }, { f: F5, d: 0.32, t: 0.4 }, { f: C5, d: 0.32, t: 0.8 }, { f: F4, d: 0.32, t: 1.2 },
+          { f: C5, d: 0.32, t: 1.6 }, { f: F5, d: 0.32, t: 2.0 }, { f: C5, d: 0.65, t: 2.4 },
+
+          // Phrase 2
+          { f: C5, d: 0.32, t: 3.2 }, { f: F5, d: 0.32, t: 3.6 }, { f: C5, d: 0.32, t: 4.0 }, { f: F5, d: 0.32, t: 4.4 },
+          { f: A5, d: 0.45, t: 4.8 }, { f: G5, d: 0.32, t: 5.3 }, { f: F5, d: 0.32, t: 5.7 }, { f: E5, d: 0.32, t: 6.1 },
+
+          // Phrase 3
+          { f: C5, d: 0.32, t: 6.8 }, { f: F5, d: 0.32, t: 7.2 }, { f: C5, d: 0.32, t: 7.6 }, { f: F4, d: 0.32, t: 8.0 },
+          { f: C5, d: 0.32, t: 8.4 }, { f: F5, d: 0.32, t: 8.8 }, { f: C5, d: 0.65, t: 9.2 },
+
+          // Phrase 4 (Cadence)
+          { f: F5, d: 0.32, t: 10.0 }, { f: D5, d: 0.32, t: 10.4 }, { f: C5, d: 0.32, t: 10.8 }, { f: B4, d: 0.32, t: 11.2 },
+          { f: A4, d: 0.38, t: 11.6 }, { f: G4, d: 0.38, t: 12.0 }, { f: F4, d: 0.85, t: 12.4 },
+
+          // Second Loop / Climax with syncopated harmony
+          { f: C5, d: 0.32, t: 13.6 }, { f: F5, d: 0.32, t: 14.0 }, { f: C5, d: 0.32, t: 14.4 }, { f: F4, d: 0.32, t: 14.8 },
+          { f: C5, d: 0.32, t: 15.2 }, { f: F5, d: 0.32, t: 15.6 }, { f: C5, d: 0.65, t: 16.0 },
+
+          { f: C5, d: 0.32, t: 16.8 }, { f: F5, d: 0.32, t: 17.2 }, { f: C5, d: 0.32, t: 17.6 }, { f: F5, d: 0.32, t: 18.0 },
+          { f: A5, d: 0.45, t: 18.4 }, { f: G5, d: 0.32, t: 18.9 }, { f: F5, d: 0.32, t: 19.3 }, { f: E5, d: 0.32, t: 19.7 },
+
+          { f: C5, d: 0.32, t: 20.4 }, { f: F5, d: 0.32, t: 20.8 }, { f: C5, d: 0.32, t: 21.2 }, { f: F4, d: 0.32, t: 21.6 },
+          { f: C5, d: 0.32, t: 22.0 }, { f: F5, d: 0.32, t: 22.4 }, { f: C5, d: 0.65, t: 22.8 },
+
+          // Grand Final Cadence (The classic 30-second buzzer finish)
+          { f: F5, d: 0.32, t: 23.6 }, { f: D5, d: 0.32, t: 24.0 }, { f: C5, d: 0.32, t: 24.4 }, { f: B4, d: 0.32, t: 24.8 },
+          { f: A4, d: 0.32, t: 25.2 }, { f: G4, d: 0.32, t: 25.6 }, { f: F4, d: 0.45, t: 26.0 },
+          { f: C4, d: 0.50, t: 26.8 }, { f: F4, d: 1.40, t: 27.5 }
+        ];
+
+        // Plucked acoustic bassline
+        const bassline = [
+          { f: F3, t: 0.0, d: 0.55 }, { f: C3, t: 0.8, d: 0.55 }, { f: F3, t: 1.6, d: 0.55 }, { f: C3, t: 2.4, d: 0.55 },
+          { f: F3, t: 3.2, d: 0.55 }, { f: C3, t: 4.0, d: 0.55 }, { f: F3, t: 4.8, d: 0.55 }, { f: C3, t: 5.6, d: 0.55 },
+          { f: F3, t: 6.8, d: 0.55 }, { f: C3, t: 7.6, d: 0.55 }, { f: F3, t: 8.4, d: 0.55 }, { f: C3, t: 9.2, d: 0.55 },
+          { f: D3, t: 10.0, d: 0.55 }, { f: G3, t: 10.8, d: 0.55 }, { f: C3, t: 11.6, d: 0.55 }, { f: F3, t: 12.4, d: 0.8 },
+          { f: F3, t: 13.6, d: 0.55 }, { f: C3, t: 14.4, d: 0.55 }, { f: F3, t: 15.2, d: 0.55 }, { f: C3, t: 16.0, d: 0.55 },
+          { f: F3, t: 16.8, d: 0.55 }, { f: C3, t: 17.6, d: 0.55 }, { f: F3, t: 18.4, d: 0.55 }, { f: C3, t: 19.2, d: 0.55 },
+          { f: F3, t: 20.4, d: 0.55 }, { f: C3, t: 21.2, d: 0.55 }, { f: F3, t: 22.0, d: 0.55 }, { f: C3, t: 22.8, d: 0.55 },
+          { f: D3, t: 23.6, d: 0.55 }, { f: G3, t: 24.4, d: 0.55 }, { f: C3, t: 25.2, d: 0.55 }, { f: F3, t: 27.5, d: 1.5 }
+        ];
+
+        // Swing percussion accompaniment
+        for (let t = 0.4; t < 27.0; t += 0.8) {
+          this.playPercussionBeat(startTime + t, 0.09);
+        }
+
+        // Schedule melody notes with precise Web Audio timing
+        melody.forEach(note => {
+          this.playMarimba(note.f, startTime + note.t, note.d, 0.24);
+        });
+
+        // Schedule bassline
+        bassline.forEach(note => {
+          this.playBass(note.f, startTime + note.t, note.d, 0.2);
+        });
+
+        // Completion / Loop handler
+        this.themeLoopTimer = setTimeout(() => {
+          if (this.isPlayingTheme) {
+            if (onComplete) {
+              onComplete();
+            } else {
+              this.startJeopardyTheme();
+            }
+          }
+        }, 29200);
+      }
+
+      // Smoothly fades out and halts all active music nodes without audio clicks
+      stopJeopardyTheme() {
+        this.isPlayingTheme = false;
+        if (this.themeLoopTimer) {
+          clearTimeout(this.themeLoopTimer);
+          this.themeLoopTimer = null;
+        }
+
+        // Stop real audio track if playing
+        if (this.realAudio) {
+          try {
+            this.realAudio.pause();
+            this.realAudio.currentTime = 0;
+          } catch (e) {}
+        }
+
+        if (this.ctx) {
+          const now = this.ctx.currentTime;
+          this.activeThemeNodes.forEach(node => {
+            try {
+              if (node.gain) {
+                node.gain.setTargetAtTime(0.0001, now, 0.04);
+              } else if (node.stop) {
+                node.stop(now + 0.08);
+              }
+            } catch (e) {}
+          });
+        }
+        this.activeThemeNodes = [];
+      }
+    }
+
+    const soundEngine = new JeopardyStudioAudioEngine();
+
+    const INITIAL_BOARD_DATA = {
+      title: "Jeopardy! Deluxe Tournament",
+      categories: [
+        {
+          id: "cat_1",
+          name: "SCIENCE & TECH",
+          clues: [
+            { id: "c1_1", value: 200, question: "This element with atomic number 6 is the foundational building block of all known organic life.", answer: "Carbon", isDailyDouble: false },
+            { id: "c1_2", value: 400, question: "Alan Turing designed his famous theoretical machine while studying this fundamental mathematical concept.", answer: "Computation (or Algorithms)", isDailyDouble: false },
+            { id: "c1_3", value: 600, question: "This electromagnetic radiation lies between ultraviolet and gamma rays on the spectrum.", answer: "X-rays", isDailyDouble: true },
+            { id: "c1_4", value: 800, question: "Named after an Austrian physicist, this thought experiment features a cat both alive and dead in a box.", answer: "Schrödinger's Cat (Erwin Schrödinger)", isDailyDouble: false },
+            { id: "c1_5", value: 1000, question: "CRISPR-Cas9 gene editing was adapted from a natural antiviral immune system found in these organisms.", answer: "Bacteria", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "cat_2",
+          name: "WORLD HISTORY",
+          clues: [
+            { id: "c2_1", value: 200, question: "In July 1789, revolutionary citizens stormed this medieval Parisian fortress and prison.", answer: "The Bastille", isDailyDouble: false },
+            { id: "c2_2", value: 400, question: "This Macedonian conqueror established one of history's largest empires before dying at age 32.", answer: "Alexander the Great", isDailyDouble: false },
+            { id: "c2_3", value: 600, question: "The Rosetta Stone provided the key to deciphering ancient hieroglyphs alongside this classical language.", answer: "Ancient Greek", isDailyDouble: false },
+            { id: "c2_4", value: 800, question: "This 1648 pair of treaties ended the Thirty Years' War and established principles of modern state sovereignty.", answer: "Peace of Westphalia", isDailyDouble: false },
+            { id: "c2_5", value: 1000, question: "The ancient trading Kingdom of Aksum flourished in northern Ethiopia and this neighboring modern nation.", answer: "Eritrea", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "cat_3",
+          name: "CINEMA & TV",
+          clues: [
+            { id: "c3_1", value: 200, question: "Directed by James Cameron in 1997, this disaster romance won 11 Academy Awards.", answer: "Titanic", isDailyDouble: false },
+            { id: "c3_2", value: 400, question: "In Breaking Bad, high school chemistry teacher Walter White adopts this street pseudonym.", answer: "Heisenberg", isDailyDouble: false },
+            { id: "c3_3", value: 600, question: "In The Matrix, Morpheus gives Neo a fateful choice between pills of these two distinct colors.", answer: "Red and Blue", isDailyDouble: false },
+            { id: "c3_4", value: 800, question: "Hayao Miyazaki's 2001 anime masterpiece became the first hand-drawn non-English film to win Best Animated Feature.", answer: "Spirited Away", isDailyDouble: true },
+            { id: "c3_5", value: 1000, question: "Stanley Kubrick's 2001: A Space Odyssey prominently features this rogue sentient computer.", answer: "HAL 9000", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "cat_4",
+          name: "VIDEO GAME LORE",
+          clues: [
+            { id: "c4_1", value: 200, question: "Nintendo's mascot Mario originally debuted in 1981 in Donkey Kong under this original moniker.", answer: "Jumpman", isDailyDouble: false },
+            { id: "c4_2", value: 400, question: "In The Legend of Zelda, Link strives to protect the kingdom of Hyrule and this three-piece triangular relic.", answer: "The Triforce", isDailyDouble: false },
+            { id: "c4_3", value: 600, question: "This critically acclaimed FromSoftware dark fantasy RPG is set in the fractured realm of 'The Lands Between'.", answer: "Elden Ring", isDailyDouble: false },
+            { id: "c4_4", value: 800, question: "Valve's puzzle masterpiece gives players an aperture device that opens portals colored blue and this.", answer: "Orange", isDailyDouble: false },
+            { id: "c4_5", value: 1000, question: "Master Chief Petty Officer from the Halo franchise is formally designated by this Spartan military number.", answer: "John-117", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "cat_5",
+          name: "GEOGRAPHY",
+          clues: [
+            { id: "c5_1", value: 200, question: "This South American river holds the undisputed world record for the greatest water discharge volume.", answer: "Amazon River", isDailyDouble: false },
+            { id: "c5_2", value: 400, question: "Mount Kilimanjaro, Africa's highest dormant volcanic peak, is located in this nation.", answer: "Tanzania", isDailyDouble: false },
+            { id: "c5_3", value: 600, question: "This transformative 750-mile tectonic boundary runs through California between the Pacific and North American plates.", answer: "San Andreas Fault", isDailyDouble: false },
+            { id: "c5_4", value: 800, question: "Bordering Israel, the West Bank, and Jordan, this hypersaline lake is Earth's lowest land elevation.", answer: "Dead Sea", isDailyDouble: false },
+            { id: "c5_5", value: 1000, question: "This international water passage separates Russia's Chukotka Peninsula from Alaska's Seward Peninsula.", answer: "Bering Strait", isDailyDouble: false }
+          ]
+        },
+        {
+          id: "cat_6",
+          name: "LITERATURE",
+          clues: [
+            { id: "c6_1", value: 200, question: "In Greek myth, this youth flew too close to the sun, melting the wax wings created by Daedalus.", answer: "Icarus", isDailyDouble: false },
+            { id: "c6_2", value: 400, question: "George Orwell's dystopian masterpiece introduced concepts like 'Thoughtcrime', 'Newspeak', and 'Big Brother'.", answer: "1984 (Nineteen Eighty-Four)", isDailyDouble: false },
+            { id: "c6_3", value: 600, question: "In Norse mythology, Thor wields this lightning-summoning war hammer forged by the dwarven brothers Sindri and Brokkr.", answer: "Mjölnir", isDailyDouble: false },
+            { id: "c6_4", value: 800, question: "Captain Ahab commands the whaling vessel Pequod in relentless pursuit of this titular albino sperm whale.", answer: "Moby Dick", isDailyDouble: false },
+            { id: "c6_5", value: 1000, question: "Dante's Divine Comedy journeys through three realms: Inferno, Purgatorio, and this final celestial sphere.", answer: "Paradiso (Paradise)", isDailyDouble: false }
+          ]
+        }
+      ],
+      finalJeopardy: {
+        category: "SPACE EXPLORATION",
+        question: "Launched in 1977, this robotic NASA space probe is currently the most distant human-made object from Earth.",
+        answer: "Voyager 1",
+        notes: "Entered interstellar space in 2012."
+      }
+    };
+
+    // Clean strings for solo practice fuzzy-matching
+    const cleanStr = (s) => {
+      if (!s) return "";
+      return s.toLowerCase()
+        .replace(/^(what is|who is|where is|what are|who are|what's|who's|where's)\s+/i, '')
+        .replace(/^(the|a|an)\s+/i, '')
+        .replace(/[^a-z0-9\s]/g, '')
+        .trim();
+    };
+
+    const isFuzzyMatch = (user, official) => {
+      const u = cleanStr(user);
+      const o = cleanStr(official);
+      if (!u || !o) return false;
+      if (u === o) return true;
+      if (o.length > 3 && u.includes(o)) return true;
+      if (u.length > 3 && o.includes(u)) return true;
+      return false;
+    };
+
+    function JeopardyApp() {
+      const [view, setView] = useState('game'); // 'game' | 'editor' | 'rules'
+      const [gameMode, setGameMode] = useState('party'); // 'party' | 'solo'
+      const [soundEnabled, setSoundEnabled] = useState(true);
+      const [volume, setVolume] = useState(0.6);
+      const [isThemePlaying, setIsThemePlaying] = useState(false);
+      const [toastMsg, setToastMsg] = useState(null);
+
+      const [hasRealAudio, setHasRealAudio] = useState(false);
+      const [audioSourceName, setAudioSourceName] = useState(null);
+      const [useRealAudio, setUseRealAudio] = useState(true);
+      const audioFileInputRef = useRef(null);
+
+      const [boardData, setBoardData] = useState(() => {
+        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v2');
+        if (saved) {
+          try { return JSON.parse(saved); } catch(e) {}
+        }
+        return INITIAL_BOARD_DATA;
+      });
+
+      // Players / Teams
+      const [players, setPlayers] = useState([
+        { id: 'p1', name: 'Team Blue', score: 0, color: '#3b82f6', key: '1' },
+        { id: 'p2', name: 'Team Red', score: 0, color: '#ef4444', key: '2' },
+        { id: 'p3', name: 'Team Gold', score: 0, color: '#eab308', key: '3' }
+      ]);
+      const [activePlayerId, setActivePlayerId] = useState('p1');
+      const [buzzedPlayerId, setBuzzedPlayerId] = useState(null);
+
+      // Active Clue Modal State
+      const [answeredClues, setAnsweredClues] = useState(new Set());
+      const [activeClue, setActiveClue] = useState(null);
+      const [isClueAnswerRevealed, setIsClueAnswerRevealed] = useState(false);
+      const [dailyDoubleWager, setDailyDoubleWager] = useState(0);
+      const [isWageringStage, setIsWageringStage] = useState(false);
+      const [soloInput, setSoloInput] = useState("");
+
+      // Timers
+      const [timerSeconds, setTimerSeconds] = useState(15);
+      const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+      // Final Jeopardy State
+      const [isFinalModal, setIsFinalModal] = useState(false);
+      const [finalStage, setFinalStage] = useState('wager'); // 'wager' | 'question' | 'reveal' | 'winner'
+      const [finalWagers, setFinalWagers] = useState({});
+      const [finalAnswers, setFinalAnswers] = useState({});
+      const [finalResults, setFinalResults] = useState({}); // { [playerId]: boolean }
+
+      // Synchronize sound settings
+      useEffect(() => {
+        soundEngine.muted = !soundEnabled;
+        soundEngine.setVolume(volume);
+        soundEngine.useRealAudio = useRealAudio;
+      }, [soundEnabled, volume, useRealAudio]);
+
+      // Automatically test if a local 'think.mp3' file exists in the website directory (e.g. on Netlify)
+      useEffect(() => {
+        const testLocalAudio = new Audio('think.mp3');
+        testLocalAudio.addEventListener('canplaythrough', () => {
+          soundEngine.setRealAudioSource('think.mp3', 'think.mp3');
+          setHasRealAudio(true);
+          setAudioSourceName('think.mp3 (Auto-Detected)');
+        }, { once: true });
+        testLocalAudio.addEventListener('error', () => {
+          // No think.mp3 file detected; ready for file picker upload
+        }, { once: true });
+      }, []);
+
+      const showToast = (msg) => {
+        setToastMsg(msg);
+        setTimeout(() => setToastMsg(null), 3200);
+      };
+
+      // Handle user uploading their authentic Jeopardy MP3/WAV/M4A file
+      const handleAudioUpload = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          const blobUrl = URL.createObjectURL(file);
+          soundEngine.setRealAudioSource(blobUrl, file.name);
+          setHasRealAudio(true);
+          setAudioSourceName(file.name);
+          setUseRealAudio(true);
+          showToast(`Loaded "${file.name}" as Real "Think!" sound!`);
+        }
+      };
+
+      // Toggle Theme Music manually
+      const toggleThemeMusic = () => {
+        if (isThemePlaying) {
+          soundEngine.stopJeopardyTheme();
+          setIsThemePlaying(false);
+          showToast("Theme music stopped");
+        } else {
+          soundEngine.startJeopardyTheme();
+          setIsThemePlaying(true);
+          showToast(hasRealAudio && useRealAudio ? `🎵 Playing Real Audio (${audioSourceName})` : "🎵 Playing Studio 'Think!' Theme");
+        }
+      };
+
+      // Keyboard Buzzer Listeners for Party Mode
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (view !== 'game' || !activeClue || isWageringStage || isClueAnswerRevealed) return;
+          // Number keys 1 through 6 map to teams
+          const matchedPlayer = players.find(p => p.key === e.key);
+          if (matchedPlayer && !buzzedPlayerId) {
+            setBuzzedPlayerId(matchedPlayer.id);
+            setActivePlayerId(matchedPlayer.id);
+            soundEngine.playBuzz();
+          }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [view, activeClue, isWageringStage, isClueAnswerRevealed, buzzedPlayerId, players]);
+
+      // Timer countdown effect
+      useEffect(() => {
+        let interval = null;
+        if (isTimerRunning && timerSeconds > 0) {
+          interval = setInterval(() => {
+            setTimerSeconds(prev => {
+              if (prev <= 4 && prev > 1) soundEngine.playTick();
+              if (prev <= 1) {
+                soundEngine.playTimeout();
+                setIsTimerRunning(false);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        }
+        return () => clearInterval(interval);
+      }, [isTimerRunning, timerSeconds]);
+
+      const totalClues = useMemo(() => {
+        return boardData.categories.reduce((acc, cat) => acc + cat.clues.length, 0);
+      }, [boardData]);
+
+      // Clue Selection Handler
+      const handleSelectClue = (categoryName, clue) => {
+        if (answeredClues.has(clue.id)) return;
+        soundEngine.playClueSelect();
+        setIsClueAnswerRevealed(false);
+        setBuzzedPlayerId(gameMode === 'solo' ? players[0]?.id : null);
+        setSoloInput("");
+
+        const clueObj = { ...clue, categoryName };
+        setActiveClue(clueObj);
+
+        if (clue.isDailyDouble) {
+          setIsWageringStage(true);
+          soundEngine.playDailyDouble();
+          const currP = players.find(p => p.id === activePlayerId) || players[0];
+          const maxW = Math.max(1000, currP ? currP.score : 1000);
+          setDailyDoubleWager(Math.min(clue.value, maxW));
+          setIsTimerRunning(false);
+        } else {
+          setIsWageringStage(false);
+          setTimerSeconds(15);
+          setIsTimerRunning(true);
+        }
+      };
+
+      const handleConfirmWager = () => {
+        setIsWageringStage(false);
+        setTimerSeconds(20);
+        setIsTimerRunning(true);
+        soundEngine.playClueSelect();
+      };
+
+      const handleScoreChange = (playerId, delta) => {
+        setPlayers(prev => prev.map(p => p.id === playerId ? { ...p, score: p.score + delta } : p));
+      };
+
+      const handleJudge = (isCorrect) => {
+        if (!activeClue) return;
+        const val = activeClue.isDailyDouble ? dailyDoubleWager : activeClue.value;
+        const targetId = buzzedPlayerId || activePlayerId;
+
+        if (isCorrect) {
+          soundEngine.playCorrect();
+          handleScoreChange(targetId, val);
+          setActivePlayerId(targetId);
+          closeClue(true);
+        } else {
+          soundEngine.playWrong();
+          handleScoreChange(targetId, -val);
+          if (gameMode === 'party' && !activeClue.isDailyDouble) {
+            setBuzzedPlayerId(null);
+          } else {
+            closeClue(true);
+          }
+        }
+      };
+
+      const handleSoloSubmit = (e) => {
+        e.preventDefault();
+        if (!soloInput.trim() || !activeClue) return;
+        const correct = isFuzzyMatch(soloInput, activeClue.answer);
+        if (correct) {
+          soundEngine.playCorrect();
+          handleScoreChange(players[0].id, activeClue.value);
+        } else {
+          soundEngine.playWrong();
+          handleScoreChange(players[0].id, -activeClue.value);
+        }
+        setIsClueAnswerRevealed(true);
+        setIsTimerRunning(false);
+      };
+
+      const closeClue = (markAnswered = true) => {
+        if (activeClue && markAnswered) {
+          setAnsweredClues(prev => new Set(prev).add(activeClue.id));
+        }
+        setActiveClue(null);
+        setIsTimerRunning(false);
+        setIsClueAnswerRevealed(false);
+        setBuzzedPlayerId(null);
+      };
+
+      const triggerConfetti = () => {
+        if (window.confetti) {
+          window.confetti({
+            particleCount: 220,
+            spread: 100,
+            origin: { y: 0.6 }
+          });
+        }
+      };
+
+      // Final Jeopardy Handlers
+      const startFinalJeopardy = () => {
+        soundEngine.playFinalStinger();
+        setIsFinalModal(true);
+        setFinalStage('wager');
+        const initW = {};
+        const initA = {};
+        const initR = {};
+        players.forEach(p => {
+          initW[p.id] = p.score > 0 ? Math.min(p.score, 1000) : 0;
+          initA[p.id] = "";
+          initR[p.id] = null;
+        });
+        setFinalWagers(initW);
+        setFinalAnswers(initA);
+        setFinalResults(initR);
+      };
+
+      const handleFinalWagersProceed = () => {
+        setFinalStage('question');
+        setTimerSeconds(30);
+        setIsTimerRunning(true);
+        // Start iconic Think theme for the 30-second final question
+        soundEngine.startJeopardyTheme(() => {
+          soundEngine.playTimeout();
+          setIsTimerRunning(false);
+        });
+        setIsThemePlaying(true);
+      };
+
+      const handleFinalAnswersProceed = () => {
+        soundEngine.stopJeopardyTheme();
+        setIsThemePlaying(false);
+        setFinalStage('reveal');
+        setIsTimerRunning(false);
+      };
+
+      const handleToggleFinalResult = (playerId, isCorrect) => {
+        const currentResult = finalResults[playerId];
+        const wager = Number(finalWagers[playerId]) || 0;
+
+        if (currentResult === true) {
+          handleScoreChange(playerId, -wager);
+        } else if (currentResult === false) {
+          handleScoreChange(playerId, wager);
+        }
+
+        handleScoreChange(playerId, isCorrect ? wager : -wager);
+        setFinalResults(prev => ({ ...prev, [playerId]: isCorrect }));
+
+        if (isCorrect) {
+          soundEngine.playCorrect();
+        } else {
+          soundEngine.playWrong();
+        }
+      };
+
+      const handleFinishTournament = () => {
+        setFinalStage('winner');
+        triggerConfetti();
+        soundEngine.playBoardReveal();
+      };
+
+      const resetGame = () => {
+        soundEngine.stopJeopardyTheme();
+        setIsThemePlaying(false);
+        setAnsweredClues(new Set());
+        setActiveClue(null);
+        setIsFinalModal(false);
+        setFinalStage('wager');
+        setPlayers(prev => prev.map(p => ({ ...p, score: 0 })));
+        soundEngine.playBoardReveal();
+        showToast("Board and scores have been reset.");
+      };
+
+      const addPlayer = () => {
+        if (players.length >= 6) return;
+        const colors = ['#3b82f6', '#ef4444', '#eab308', '#10b981', '#8b5cf6', '#ec4899'];
+        const p = {
+          id: 'p_' + Date.now(),
+          name: `Team ${players.length + 1}`,
+          score: 0,
+          color: colors[players.length % colors.length],
+          key: String(players.length + 1)
+        };
+        setPlayers([...players, p]);
+      };
+
+      const removePlayer = (id) => {
+        if (players.length <= 1) return;
+        setPlayers(players.filter(p => p.id !== id));
+      };
+
+      return (
+        <div className="flex flex-col min-h-screen bg-slate-950 text-slate-100 selection:bg-amber-500 selection:text-slate-950">
+          {/* Studio Top Navigation Bar */}
+          <header className="bg-slate-900/95 border-b border-blue-950 px-4 py-2.5 sticky top-0 z-40 backdrop-blur shadow-2xl flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center space-x-3">
+              <div className="bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-300 text-blue-950 font-black text-xl font-board px-3.5 py-1 rounded shadow-lg tracking-widest border border-yellow-200 glow-gold">
+                JEOPARDY!
+              </div>
+              <div className="hidden md:flex flex-col border-l border-blue-900/80 pl-3">
+                <span className="text-xs font-bold uppercase tracking-widest text-amber-300">
+                  {boardData.title}
+                </span>
+                <span className="text-[10px] text-blue-400 font-semibold tracking-wide">
+                  Final: <span className="text-white font-bold">{boardData.finalJeopardy?.category || "Configured"}</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Middle Audio Synthesizer Bar */}
+            <div className="flex items-center bg-slate-950/80 border border-blue-900/60 rounded-xl px-3 py-1.5 space-x-3 text-xs">
+              <button
+                onClick={toggleThemeMusic}
+                className={`flex items-center space-x-1.5 font-bold px-2.5 py-1 rounded-lg transition ${
+                  isThemePlaying
+                    ? 'bg-amber-500 text-slate-950 shadow-md animate-pulse glow-gold'
+                    : 'bg-slate-800 text-amber-400 hover:bg-slate-700'
+                }`}
+                title="Play/Pause iconic Jeopardy Think theme"
+              >
+                <span>🎵</span>
+                <span>{isThemePlaying ? "Playing 'Think!'" : "Play Theme"}</span>
+              </button>
+
+              {/* Real Audio Uploader & Selector */}
+              <input
+                ref={audioFileInputRef}
+                type="file"
+                accept="audio/*"
+                onChange={handleAudioUpload}
+                className="hidden"
+              />
+
+              <button
+                onClick={() => audioFileInputRef.current?.click()}
+                className={`flex items-center space-x-1 px-2.5 py-1 rounded-lg font-bold border transition text-[11px] ${
+                  hasRealAudio
+                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-700 hover:bg-emerald-900'
+                    : 'bg-blue-950/80 text-blue-300 border-blue-800 hover:bg-blue-900'
+                }`}
+                title="Load your real Jeopardy MP3 or put think.mp3 in the app directory"
+              >
+                <span>{hasRealAudio ? "✓ Real MP3" : "📁 Put Real MP3"}</span>
+                {audioSourceName && (
+                  <span className="hidden xl:inline text-[9px] text-slate-300 truncate max-w-[90px]">
+                    ({audioSourceName})
+                  </span>
+                )}
+              </button>
+
+              {hasRealAudio && (
+                <button
+                  onClick={() => {
+                    setUseRealAudio(!useRealAudio);
+                    showToast(useRealAudio ? "Switched to Studio Synthesizer" : "Switched to Real Audio Recording");
+                  }}
+                  className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-300 hover:text-white"
+                  title="Toggle between real audio file and synth"
+                >
+                  {useRealAudio ? "Source: Real Audio" : "Source: Synth"}
+                </button>
+              )}
+
+              <div className="flex items-center space-x-1.5">
+                <span className="text-slate-400 text-[11px]">Vol:</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={volume}
+                  onChange={(e) => setVolume(parseFloat(e.target.value))}
+                  className="w-16 h-1.5 bg-slate-800 rounded-lg accent-amber-400 cursor-pointer"
+                />
+              </div>
+
+              <button
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                className="text-sm text-slate-300 hover:text-white"
+                title={soundEnabled ? "Mute All SFX" : "Unmute All SFX"}
+              >
+                {soundEnabled ? "🔊" : "🔇"}
+              </button>
+            </div>
+
+            {/* View Switchers */}
+            <div className="flex items-center space-x-2">
+              <div className="bg-slate-800/90 p-1 rounded-xl border border-slate-700/80 flex text-xs font-bold shadow-inner">
+                <button
+                  onClick={() => setView('game')}
+                  className={`px-3 py-1.5 rounded-lg transition ${view === 'game' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+                >
+                  Game Board
+                </button>
+                <button
+                  onClick={() => setView('editor')}
+                  className={`px-3 py-1.5 rounded-lg transition ${view === 'editor' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+                >
+                  Board & Final Editor
+                </button>
+                <button
+                  onClick={() => setView('rules')}
+                  className={`px-3 py-1.5 rounded-lg transition ${view === 'rules' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-400 hover:text-white'}`}
+                >
+                  Rules
+                </button>
+              </div>
+            </div>
+          </header>
+
+          {/* Toast Notification */}
+          {toastMsg && (
+            <div className="fixed bottom-6 right-6 z-50 bg-amber-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl shadow-2xl border border-yellow-200 animate-bounce text-xs uppercase tracking-wider">
+              {toastMsg}
+            </div>
+          )}
+
+          {/* Main App Container */}
+          <main className="flex-1 flex flex-col p-3 sm:p-5 max-w-7xl mx-auto w-full">
+            {view === 'rules' && <RulesComponent onStart={() => setView('game')} />}
+            
+            {view === 'editor' && (
+              <BoardEditorComponent
+                boardData={boardData}
+                setBoardData={(newData) => {
+                  setBoardData(newData);
+                  localStorage.setItem('jeopardy_custom_board_deluxe_v2', JSON.stringify(newData));
+                  showToast("Board and Final Jeopardy saved!");
+                }}
+                onClose={() => setView('game')}
+              />
+            )}
+
+            {view === 'game' && (
+              <div className="flex-1 flex flex-col space-y-4">
+                {/* Control Ribbon */}
+                <div className="bg-slate-900/80 border border-blue-900/40 rounded-2xl p-3 shadow-xl flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Mode:</span>
+                    <button
+                      onClick={() => setGameMode('party')}
+                      className={`px-3 py-1 text-xs font-bold rounded-lg transition ${gameMode === 'party' ? 'bg-amber-500 text-slate-950 shadow-md' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
+                    >
+                      👥 Host & Party
+                    </button>
+                    <button
+                      onClick={() => setGameMode('solo')}
+                      className={`px-3 py-1 text-xs font-bold rounded-lg transition ${gameMode === 'solo' ? 'bg-amber-500 text-slate-950 shadow-md' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
+                    >
+                      👤 Solo Practice
+                    </button>
+                  </div>
+
+                  <div className="flex items-center space-x-3 text-xs">
+                    <div className="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 font-mono font-bold text-amber-400">
+                      Answered: {answeredClues.size} / {totalClues}
+                    </div>
+
+                    <button
+                      onClick={startFinalJeopardy}
+                      className="px-4 py-1.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black uppercase tracking-wider rounded-lg shadow-lg hover:brightness-110 active:scale-95 transition glow-gold"
+                    >
+                      ★ Final Jeopardy
+                    </button>
+
+                    <button
+                      onClick={resetGame}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 rounded-lg transition font-bold"
+                      title="Reset Board"
+                    >
+                      🔄 Reset
+                    </button>
+                  </div>
+                </div>
+
+                {}
+                <div className="flex-1 bg-gradient-to-b from-blue-950 via-slate-950 to-blue-950 p-2.5 sm:p-4 rounded-3xl border-4 border-blue-900/60 shadow-2xl overflow-x-auto glow-blue">
+                  <div className="grid grid-cols-6 gap-2 sm:gap-3.5 min-w-[760px] h-full">
+                    {boardData.categories.map((cat) => (
+                      <div key={cat.id} className="flex flex-col space-y-2 sm:space-y-3">
+                        {/* Category Banner */}
+                        <div className="h-20 sm:h-24 jeopardy-header border-2 border-blue-400/50 rounded-2xl shadow-lg p-2 flex items-center justify-center text-center">
+                          <h3 className="font-board text-xs sm:text-sm lg:text-base font-black text-amber-300 uppercase tracking-wider leading-tight text-gold-shadow">
+                            {cat.name}
+                          </h3>
+                        </div>
+
+                        {/* Clue Value Tiles */}
+                        {cat.clues.map((clue) => {
+                          const isDone = answeredClues.has(clue.id);
+                          return (
+                            <button
+                              key={clue.id}
+                              disabled={isDone}
+                              onClick={() => handleSelectClue(cat.name, clue)}
+                              className={`flex-1 min-h-[62px] sm:min-h-[76px] rounded-2xl border-2 transition-all duration-200 font-board text-2xl sm:text-3xl lg:text-4xl flex items-center justify-center shadow-lg relative group ${
+                                isDone
+                                  ? 'bg-slate-900/40 border-slate-800/80 text-slate-700 cursor-not-allowed opacity-20'
+                                  : 'jeopardy-tile border-blue-500/50 text-amber-400 hover:text-yellow-200 hover:border-amber-400 hover:scale-[1.02] active:scale-95 cursor-pointer glow-blue'
+                              }`}
+                            >
+                              {!isDone ? (
+                                <span className="font-black tracking-tighter text-gold-shadow">
+                                  ${clue.value}
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-mono text-slate-600 uppercase font-bold">DONE</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {}
+                <div className="bg-slate-900/90 border border-blue-900/50 rounded-3xl p-4 sm:p-5 shadow-2xl">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xs font-bold uppercase tracking-widest text-slate-300 flex items-center space-x-2">
+                      <span className="text-amber-400 text-sm">🏆</span>
+                      <span>{gameMode === 'party' ? "Contestant Podiums & Live Buzzers (Keys 1-6)" : "Solo Station"}</span>
+                    </h4>
+                    {gameMode === 'party' && (
+                      <button
+                        onClick={addPlayer}
+                        disabled={players.length >= 6}
+                        className="text-xs bg-blue-900/70 hover:bg-blue-800 border border-blue-700 text-blue-200 px-3 py-1.5 rounded-xl transition font-bold disabled:opacity-50"
+                      >
+                        + Add Team
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    {players.map((p) => {
+                      const isBuzzed = buzzedPlayerId === p.id;
+                      const isActive = activePlayerId === p.id;
+
+                      return (
+                        <div
+                          key={p.id}
+                          className={`rounded-2xl border-2 p-3 sm:p-3.5 transition flex flex-col justify-between ${
+                            isBuzzed
+                              ? 'border-amber-400 bg-amber-950/40 shadow-xl shadow-amber-500/30 ring-2 ring-amber-400 scale-[1.02]'
+                              : isActive
+                              ? 'border-blue-500 bg-blue-950/50 shadow-lg'
+                              : 'border-slate-800 bg-slate-950/70'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center space-x-1.5 overflow-hidden">
+                              <span className="w-3 h-3 rounded-full shrink-0 shadow" style={{ backgroundColor: p.color }} />
+                              <input
+                                type="text"
+                                value={p.name}
+                                onChange={(e) => {
+                                  const name = e.target.value;
+                                  setPlayers(players.map(item => item.id === p.id ? { ...item, name } : item));
+                                }}
+                                className="bg-transparent text-xs font-black text-slate-100 outline-none w-20 truncate focus:border-b border-blue-400"
+                              />
+                            </div>
+                            {gameMode === 'party' && players.length > 1 && (
+                              <button
+                                onClick={() => removePlayer(p.id)}
+                                className="text-slate-500 hover:text-red-400 text-xs transition font-bold"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
+
+                          <div className={`text-2xl font-black font-mono my-2 text-center tracking-tight ${p.score < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                            ${p.score.toLocaleString()}
+                          </div>
+
+                          <div className="flex items-center justify-between border-t border-slate-800/90 pt-2.5 text-[10px]">
+                            <div className="flex space-x-1">
+                              <button
+                                onClick={() => handleScoreChange(p.id, -200)}
+                                className="bg-red-950/80 hover:bg-red-800 text-red-300 border border-red-800 px-1.5 py-0.5 rounded font-mono font-bold"
+                              >
+                                -200
+                              </button>
+                              <button
+                                onClick={() => handleScoreChange(p.id, 200)}
+                                className="bg-emerald-950/80 hover:bg-emerald-800 text-emerald-300 border border-emerald-800 px-1.5 py-0.5 rounded font-mono font-bold"
+                              >
+                                +200
+                              </button>
+                            </div>
+
+                            {gameMode === 'party' && (
+                              <button
+                                onClick={() => {
+                                  if (buzzedPlayerId) return;
+                                  setBuzzedPlayerId(p.id);
+                                  setActivePlayerId(p.id);
+                                  soundEngine.playBuzz();
+                                }}
+                                className={`px-2 py-1 rounded-lg font-black uppercase text-[10px] transition ${
+                                  isBuzzed ? 'bg-amber-400 text-slate-950 animate-pulse glow-gold' : 'bg-slate-800 hover:bg-blue-600 text-slate-300'
+                                }`}
+                              >
+                                {isBuzzed ? "Buzzed!" : `Key ${p.key}`}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+          </main>
+
+          {}
+          {activeClue && (
+            <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+              <div className="w-full max-w-4xl bg-gradient-to-b from-blue-900 via-blue-950 to-slate-950 border-4 border-amber-400 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col justify-between min-h-[500px] glow-gold">
+                {/* Modal Header */}
+                <div className="flex items-center justify-between border-b border-blue-800 pb-4">
+                  <div className="flex items-center space-x-2.5">
+                    <span className="bg-amber-400 text-blue-950 font-black text-xs px-3 py-1 rounded-lg uppercase tracking-wider">
+                      {activeClue.categoryName}
+                    </span>
+                    {activeClue.isDailyDouble && (
+                      <span className="bg-gradient-to-r from-red-600 to-amber-600 text-white font-black text-xs px-3 py-1 rounded-lg uppercase tracking-widest animate-pulse border border-yellow-300 glow-gold">
+                        ★ DAILY DOUBLE ★
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <div className={`px-3 py-1 rounded-full font-mono text-sm font-bold flex items-center space-x-1.5 ${timerSeconds <= 4 ? 'bg-red-900 text-red-200 animate-bounce border border-red-500' : 'bg-blue-950 text-amber-400 border border-blue-800'}`}>
+                      <span>⏱</span>
+                      <span>{timerSeconds}s</span>
+                    </div>
+                    <button onClick={() => closeClue(true)} className="text-slate-400 hover:text-white text-lg font-bold">
+                      ✕
+                    </button>
+                  </div>
+                </div>
+
+                {/* Clue Wagering or Display */}
+                {isWageringStage ? (
+                  <div className="my-auto text-center space-y-6 max-w-md mx-auto py-6">
+                    <div className="space-y-1">
+                      <h3 className="text-3xl font-board font-black text-amber-300 uppercase tracking-widest text-gold-shadow">
+                        Wager Your Points
+                      </h3>
+                      <p className="text-xs text-blue-200">
+                        Wager up to your current score (or a minimum ceiling of $1,000).
+                      </p>
+                    </div>
+
+                    <div className="bg-blue-950/80 p-5 rounded-2xl border border-blue-700 shadow-inner">
+                      <div className="text-4xl font-mono font-black text-amber-400 mb-3">
+                        ${dailyDoubleWager}
+                      </div>
+                      <input
+                        type="range"
+                        min="5"
+                        max={Math.max(1000, players.find(p => p.id === activePlayerId)?.score || 1000)}
+                        step="50"
+                        value={dailyDoubleWager}
+                        onChange={(e) => setDailyDoubleWager(Number(e.target.value))}
+                        className="w-full h-2 bg-blue-800 rounded-lg cursor-pointer accent-amber-400"
+                      />
+                      <div className="flex justify-between text-[11px] text-slate-400 mt-2 font-mono">
+                        <span>$5</span>
+                        <span>Max: ${Math.max(1000, players.find(p => p.id === activePlayerId)?.score || 1000)}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleConfirmWager}
+                      className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black uppercase tracking-wider rounded-xl shadow-lg hover:from-amber-400 hover:to-yellow-300 transition"
+                    >
+                      Lock In Wager & Reveal Clue
+                    </button>
+                  </div>
+                ) : (
+                  <div className="my-auto flex flex-col items-center justify-center text-center px-4 py-6">
+                    <p className="font-clue text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-100 leading-relaxed max-w-3xl text-clue-shadow">
+                      "{activeClue.question}"
+                    </p>
+
+                    {isClueAnswerRevealed && (
+                      <div className="mt-8 p-4 bg-emerald-950/80 border-2 border-emerald-500 rounded-2xl max-w-xl w-full">
+                        <span className="text-[10px] uppercase font-bold text-emerald-300 tracking-widest block">Official Response:</span>
+                        <h4 className="font-clue text-xl sm:text-2xl font-black text-white mt-1">
+                          {activeClue.answer}
+                        </h4>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Modal Actions */}
+                {!isWageringStage && (
+                  <div className="border-t border-blue-800 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    {gameMode === 'party' ? (
+                      <>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-slate-400">Speaker:</span>
+                          <span className="text-xs font-bold text-amber-300 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+                            {players.find(p => p.id === (buzzedPlayerId || activePlayerId))?.name || "None buzzed"}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => setIsClueAnswerRevealed(!isClueAnswerRevealed)}
+                            className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-slate-200 transition"
+                          >
+                            {isClueAnswerRevealed ? "Hide Answer" : "Reveal Answer"}
+                          </button>
+                          <button
+                            onClick={() => handleJudge(false)}
+                            className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition shadow"
+                          >
+                            ✕ Wrong (-${activeClue.isDailyDouble ? dailyDoubleWager : activeClue.value})
+                          </button>
+                          <button
+                            onClick={() => handleJudge(true)}
+                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black uppercase tracking-wider transition shadow-lg"
+                          >
+                            ✓ Correct (+${activeClue.isDailyDouble ? dailyDoubleWager : activeClue.value})
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <form onSubmit={handleSoloSubmit} className="w-full flex flex-col sm:flex-row items-center gap-3">
+                        <input
+                          type="text"
+                          disabled={isClueAnswerRevealed}
+                          placeholder="Type response: What is / Who is..."
+                          value={soloInput}
+                          onChange={(e) => setSoloInput(e.target.value)}
+                          className="flex-1 bg-slate-900 border border-blue-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                        />
+                        {!isClueAnswerRevealed ? (
+                          <button
+                            type="submit"
+                            className="px-6 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition shadow"
+                          >
+                            Submit
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => closeClue(true)}
+                            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase tracking-wider rounded-xl transition"
+                          >
+                            Continue
+                          </button>
+                        )}
+                      </form>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {}
+          {isFinalModal && (
+            <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex items-center justify-center p-4">
+              <div className="w-full max-w-4xl bg-gradient-to-b from-blue-950 via-slate-950 to-blue-950 border-4 border-amber-400 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col justify-between min-h-[520px] glow-gold">
+                <div className="flex items-center justify-between border-b border-blue-800 pb-3">
+                  <div className="flex items-center space-x-2">
+                    <span className="bg-amber-400 text-slate-950 font-black text-xs px-3 py-1 rounded-lg uppercase font-board tracking-wider glow-gold">
+                      ★ FINAL JEOPARDY ★
+                    </span>
+                    {isThemePlaying && (
+                      <span className="text-xs text-amber-300 font-bold animate-pulse">
+                        🎵 Theme Music Active
+                      </span>
+                    )}
+                  </div>
+                  <button onClick={() => {
+                    soundEngine.stopJeopardyTheme();
+                    setIsThemePlaying(false);
+                    setIsFinalModal(false);
+                  }} className="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+                </div>
+
+                {/* Stage 1: Category Reveal & Wagers */}
+                {finalStage === 'wager' && (
+                  <div className="my-auto space-y-6 text-center max-w-xl mx-auto w-full">
+                    <div>
+                      <span className="text-xs uppercase font-bold tracking-widest text-amber-400">Final Category</span>
+                      <h2 className="text-3xl sm:text-4xl font-board font-black text-white mt-1 text-gold-shadow uppercase">
+                        {boardData.finalJeopardy?.category || "UNTITLED FINAL CATEGORY"}
+                      </h2>
+                    </div>
+
+                    <div className="space-y-3 bg-slate-900/90 p-4 rounded-2xl border border-slate-800 max-h-56 overflow-y-auto">
+                      {players.map(p => (
+                        <div key={p.id} className="flex items-center justify-between gap-3 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: p.color }} />
+                            <span className="font-bold text-slate-200">{p.name} (${p.score})</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <span className="text-slate-400 font-mono">$</span>
+                            <input
+                              type="number"
+                              min="0"
+                              max={Math.max(0, p.score)}
+                              value={finalWagers[p.id] || 0}
+                              onChange={(e) => setFinalWagers({ ...finalWagers, [p.id]: Number(e.target.value) })}
+                              className="w-24 bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-right font-mono font-bold text-amber-400 outline-none focus:border-amber-400"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={handleFinalWagersProceed}
+                      className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase tracking-wider rounded-xl transition shadow-lg"
+                    >
+                      Lock In Wagers & Play 30s Final Clue 🎵
+                    </button>
+                  </div>
+                )}
+
+                {/* Stage 2: Clue & Response Entry with Think Theme */}
+                {finalStage === 'question' && (
+                  <div className="my-auto space-y-6 text-center max-w-2xl mx-auto w-full">
+                    <div className="space-y-2">
+                      <div className="inline-block px-4 py-1.5 rounded-full bg-blue-950 border border-blue-700 text-amber-400 font-mono text-lg font-bold">
+                        ⏱ {timerSeconds}s Remaining (Think! Music Playing)
+                      </div>
+                      {/* Animated Progress Bar */}
+                      <div className="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-blue-900">
+                        <div
+                          className="bg-amber-400 h-full transition-all duration-1000 ease-linear"
+                          style={{ width: `${(timerSeconds / 30) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <p className="font-clue text-2xl sm:text-3xl font-bold text-white leading-relaxed text-clue-shadow">
+                      "{boardData.finalJeopardy?.question || "No final question provided."}"
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-44 overflow-y-auto text-left">
+                      {players.map(p => (
+                        <div key={p.id} className="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">{p.name}'s Response:</span>
+                          <input
+                            type="text"
+                            placeholder="What is / Who is..."
+                            value={finalAnswers[p.id] || ""}
+                            onChange={(e) => setFinalAnswers({ ...finalAnswers, [p.id]: e.target.value })}
+                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-white outline-none focus:border-blue-400"
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={handleFinalAnswersProceed}
+                      className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-wider rounded-xl transition shadow-lg"
+                    >
+                      Proceed to Final Scoring
+                    </button>
+                  </div>
+                )}
+
+                {/* Stage 3: Reveal and Scoring */}
+                {finalStage === 'reveal' && (
+                  <div className="my-auto space-y-6 max-w-2xl mx-auto w-full">
+                    <div className="text-center">
+                      <span className="text-xs uppercase font-bold text-slate-400">Correct Final Response</span>
+                      <h3 className="font-clue text-2xl font-black text-emerald-400 bg-emerald-950/70 p-3 rounded-2xl border border-emerald-600 mt-1">
+                        {boardData.finalJeopardy?.answer || "No final answer provided."}
+                      </h3>
+                      {boardData.finalJeopardy?.notes && (
+                        <p className="text-xs text-slate-400 mt-1 italic">
+                          Note: {boardData.finalJeopardy.notes}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-3">
+                      {players.map(p => {
+                        const status = finalResults[p.id];
+                        return (
+                          <div key={p.id} className="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
+                            <div>
+                              <div className="font-bold text-sm text-slate-200">{p.name} (Current: ${p.score})</div>
+                              <div className="text-xs text-slate-400 italic">
+                                "{finalAnswers[p.id] || "No response"}" (Wager: ${finalWagers[p.id] || 0})
+                              </div>
+                            </div>
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleToggleFinalResult(p.id, false)}
+                                className={`px-3 py-1.5 text-xs rounded-xl font-bold transition ${status === false ? 'bg-red-600 text-white ring-2 ring-red-400' : 'bg-red-950 hover:bg-red-800 text-red-300 border border-red-800'}`}
+                              >
+                                ✕ Wrong
+                              </button>
+                              <button
+                                onClick={() => handleToggleFinalResult(p.id, true)}
+                                className={`px-3 py-1.5 text-xs rounded-xl font-bold transition ${status === true ? 'bg-emerald-600 text-white ring-2 ring-emerald-400' : 'bg-emerald-950 hover:bg-emerald-800 text-emerald-300 border border-emerald-800'}`}
+                              >
+                                ✓ Correct
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      onClick={handleFinishTournament}
+                      className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black uppercase tracking-wider rounded-xl transition shadow-xl"
+                    >
+                      🏆 Crown Tournament Champion
+                    </button>
+                  </div>
+                )}
+
+                {/* Stage 4: Winner Celebration Podium */}
+                {finalStage === 'winner' && (
+                  <div className="my-auto text-center space-y-6 max-w-xl mx-auto w-full py-4">
+                    <h2 className="text-3xl sm:text-4xl font-board font-black uppercase tracking-widest text-amber-300 text-gold-shadow">
+                      Tournament Champions
+                    </h2>
+
+                    <div className="space-y-2.5 bg-slate-900/90 p-4 rounded-3xl border-2 border-amber-500/50 shadow-2xl">
+                      {[...players].sort((a, b) => b.score - a.score).map((p, idx) => (
+                        <div
+                          key={p.id}
+                          className={`flex items-center justify-between p-3 rounded-2xl ${idx === 0 ? 'bg-amber-500/20 border border-amber-400 text-amber-300 font-black glow-gold' : 'bg-slate-950 text-slate-300'}`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <span className="font-bold text-lg">{idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}</span>
+                            <span className="text-base">{p.name}</span>
+                          </div>
+                          <span className="font-mono font-black text-xl">${p.score.toLocaleString()}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={resetGame}
+                        className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition shadow-lg"
+                      >
+                        Play Again
+                      </button>
+                      <button
+                        onClick={() => setIsFinalModal(false)}
+                        className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function BoardEditorComponent({ boardData, setBoardData, onClose }) {
+      const [board, setBoard] = useState(boardData);
+      const [activeTab, setActiveTab] = useState('categories'); // 'categories' | 'final'
+      const [activeCat, setActiveCat] = useState(0);
+      const [jsonText, setJsonText] = useState("");
+      const [importError, setImportError] = useState(null);
+
+      const handleSave = () => {
+        setBoardData(board);
+        onClose();
+      };
+
+      const resetToDefault = () => {
+        setBoard(INITIAL_BOARD_DATA);
+        setBoardData(INITIAL_BOARD_DATA);
+      };
+
+      const exportJSON = () => {
+        const str = JSON.stringify(board, null, 2);
+        const blob = new Blob([str], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `jeopardy_deluxe_board_${Date.now()}.json`;
+        a.click();
+      };
+
+      const handleImport = () => {
+        try {
+          const parsed = JSON.parse(jsonText);
+          if (!parsed.categories || !Array.isArray(parsed.categories)) {
+            throw new Error("Invalid structure: Missing 'categories' array.");
+          }
+          if (!parsed.finalJeopardy || !parsed.finalJeopardy.category) {
+            throw new Error("Invalid structure: Missing 'finalJeopardy' object.");
+          }
+          setBoard(parsed);
+          setBoardData(parsed);
+          setImportError(null);
+          onClose();
+        } catch (e) {
+          setImportError("Import failed: " + e.message);
+        }
+      };
+
+      return (
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-6">
+          <div className="flex flex-wrap items-center justify-between border-b border-slate-800 pb-4 gap-3">
+            <div>
+              <h2 className="text-xl font-bold font-board tracking-wider text-white flex items-center space-x-2">
+                <span>🛠 Studio Board & Final Jeopardy Builder</span>
+              </h2>
+              <p className="text-xs text-slate-400">Customize categories, clues, Daily Doubles, and the Final Jeopardy showdown.</p>
+            </div>
+            <div className="flex flex-wrap items-center space-x-2">
+              <button
+                onClick={resetToDefault}
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl border border-slate-700 transition"
+              >
+                🔄 Reset Default
+              </button>
+              <button
+                onClick={exportJSON}
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition"
+              >
+                📥 Export JSON
+              </button>
+              <button
+                onClick={handleSave}
+                className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black uppercase rounded-xl transition shadow"
+              >
+                💾 Save & Apply
+              </button>
+            </div>
+          </div>
+
+          {/* Top Tabs: Standard Board vs Final Jeopardy */}
+          <div className="flex space-x-2 border-b border-slate-800 pb-2">
+            <button
+              onClick={() => setActiveTab('categories')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition ${activeTab === 'categories' ? 'bg-blue-600 text-white shadow' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+            >
+              📋 Standard Board Categories (6)
+            </button>
+            <button
+              onClick={() => setActiveTab('final')}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${activeTab === 'final' ? 'bg-amber-500 text-slate-950 font-black shadow glow-gold' : 'bg-slate-800 text-amber-400 hover:text-white'}`}
+            >
+              <span>★</span>
+              <span>Final Jeopardy Settings</span>
+            </button>
+          </div>
+
+          {/* TAB 1: Categories & Clues */}
+          {activeTab === 'categories' && (
+            <div className="space-y-4">
+              {/* Category selector pills */}
+              <div className="flex space-x-2 overflow-x-auto pb-2">
+                {board.categories.map((cat, idx) => (
+                  <button
+                    key={cat.id || idx}
+                    onClick={() => setActiveCat(idx)}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${activeCat === idx ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                  >
+                    Cat {idx + 1}: {cat.name || "Untitled"}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center space-x-3 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                <label className="text-xs font-bold text-slate-400 uppercase">Category {activeCat + 1} Name:</label>
+                <input
+                  type="text"
+                  value={board.categories[activeCat]?.name || ""}
+                  onChange={(e) => {
+                    const updated = { ...board };
+                    updated.categories[activeCat].name = e.target.value;
+                    setBoard(updated);
+                  }}
+                  className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-sm text-amber-300 font-bold outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 gap-3">
+                {board.categories[activeCat]?.clues.map((clue, cIdx) => (
+                  <div key={clue.id || cIdx} className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-mono font-bold text-amber-400 text-sm">${clue.value}</span>
+                        <input
+                          type="number"
+                          step="100"
+                          value={clue.value}
+                          onChange={(e) => {
+                            const updated = { ...board };
+                            updated.categories[activeCat].clues[cIdx].value = Number(e.target.value);
+                            setBoard(updated);
+                          }}
+                          className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-xs text-amber-400 font-mono font-bold"
+                        />
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          const updated = { ...board };
+                          updated.categories[activeCat].clues[cIdx].isDailyDouble = !clue.isDailyDouble;
+                          setBoard(updated);
+                        }}
+                        className={`text-[10px] px-2.5 py-1 rounded-lg font-bold uppercase transition ${clue.isDailyDouble ? 'bg-red-600 text-white glow-gold' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+                      >
+                        {clue.isDailyDouble ? "★ Daily Double Active" : "+ Make Daily Double"}
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="text-[10px] text-slate-400 uppercase block mb-1">Clue / Question</label>
+                        <input
+                          type="text"
+                          value={clue.question}
+                          onChange={(e) => {
+                            const updated = { ...board };
+                            updated.categories[activeCat].clues[cIdx].question = e.target.value;
+                            setBoard(updated);
+                          }}
+                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-white outline-none focus:border-blue-400"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-slate-400 uppercase block mb-1">Answer / Response</label>
+                        <input
+                          type="text"
+                          value={clue.answer}
+                          onChange={(e) => {
+                            const updated = { ...board };
+                            updated.categories[activeCat].clues[cIdx].answer = e.target.value;
+                            setBoard(updated);
+                          }}
+                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-emerald-300 outline-none focus:border-emerald-400"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: EDIT FINAL JEOPARDY */}
+          {activeTab === 'final' && (
+            <div className="bg-slate-950 p-5 rounded-3xl border-2 border-amber-500/40 space-y-4 glow-gold">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 className="text-base font-black text-amber-400 uppercase font-board tracking-wider flex items-center space-x-2">
+                  <span>★ Final Jeopardy Customization</span>
+                </h3>
+                <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/40 px-2.5 py-0.5 rounded-full font-mono">
+                  Saved with Board Export
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
+                    Final Jeopardy Category Name:
+                  </label>
+                  <input
+                    type="text"
+                    value={board.finalJeopardy?.category || ""}
+                    onChange={(e) => {
+                      setBoard({
+                        ...board,
+                        finalJeopardy: { ...board.finalJeopardy, category: e.target.value }
+                      });
+                    }}
+                    placeholder="e.g. FAMOUS LANDMARKS, WORLD HISTORY..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm font-bold text-amber-300 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
+                    Final Clue / Question Prompt:
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={board.finalJeopardy?.question || ""}
+                    onChange={(e) => {
+                      setBoard({
+                        ...board,
+                        finalJeopardy: { ...board.finalJeopardy, question: e.target.value }
+                      });
+                    }}
+                    placeholder="Enter the comprehensive final clue presented to contestants..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 font-clue focus:outline-none focus:border-blue-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
+                    Official Correct Final Answer:
+                  </label>
+                  <input
+                    type="text"
+                    value={board.finalJeopardy?.answer || ""}
+                    onChange={(e) => {
+                      setBoard({
+                        ...board,
+                        finalJeopardy: { ...board.finalJeopardy, answer: e.target.value }
+                      });
+                    }}
+                    placeholder="e.g. Mount Everest, William Shakespeare..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
+                    Host Notes / Context (Optional):
+                  </label>
+                  <input
+                    type="text"
+                    value={board.finalJeopardy?.notes || ""}
+                    onChange={(e) => {
+                      setBoard({
+                        ...board,
+                        finalJeopardy: { ...board.finalJeopardy, notes: e.target.value }
+                      });
+                    }}
+                    placeholder="e.g. Entered interstellar space in 2012."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-300 focus:outline-none focus:border-blue-400"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* JSON Import Box */}
+          <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
+            <span className="text-xs font-bold text-slate-400 uppercase block">Import Existing JSON Board:</span>
+            <textarea
+              rows={2}
+              value={jsonText}
+              onChange={(e) => setJsonText(e.target.value)}
+              placeholder='Paste full board JSON containing "categories" and "finalJeopardy"...'
+              className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs font-mono text-slate-300 focus:outline-none focus:border-blue-400"
+            />
+            {importError && <p className="text-xs text-red-400 font-bold">{importError}</p>}
+            <button
+              onClick={handleImport}
+              className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition shadow"
+            >
+              Upload & Load Board
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    function RulesComponent({ onStart }) {
+      return (
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-3xl mx-auto space-y-6 text-slate-300 shadow-2xl">
+          <h2 className="text-2xl font-black font-board text-amber-400 tracking-wider uppercase border-b border-slate-800 pb-3 text-gold-shadow">
+            Jeopardy! Studio Live - Deluxe Rules & Guide
+          </h2>
+          <div className="space-y-4 text-xs sm:text-sm leading-relaxed">
+            <p><strong className="text-white">1. Real "Think!" Theme Audio & Synthesizer:</strong> You can load your authentic Jeopardy "Think!" theme recording (.mp3, .wav, or .m4a) directly using the <span className="bg-blue-950 text-blue-300 border border-blue-800 px-1.5 py-0.5 rounded font-bold">📁 Put Real MP3</span> button in the top bar. Alternatively, name your file <code className="bg-slate-800 text-amber-400 px-1.5 py-0.5 rounded">think.mp3</code> and place it in the same directory alongside <code className="bg-slate-800 text-amber-400 px-1.5 py-0.5 rounded">index.html</code> (on Netlify or a local server) to have it auto-detected!</p>
+            <p><strong className="text-white">2. The Main Board:</strong> 6 categories with 5 clue cards valued $200 through $1,000. Click any clue to reveal.</p>
+            <p><strong className="text-white">3. Daily Doubles:</strong> Allows the player who picked the tile to wager any amount up to their current bankroll (or minimum $1,000).</p>
+            <p><strong className="text-white">4. Buzzers & Modes:</strong> In Party Mode, players can press their on-screen button or press keyboard numbers <code className="bg-slate-800 text-amber-400 px-1.5 py-0.5 rounded">1-6</code>. In Solo Mode, submit typed answers for auto-grading.</p>
+            <p><strong className="text-white">5. Final Jeopardy & Custom Boards:</strong> You can edit the Final Jeopardy category, question, answer, and notes anytime in the Board Editor tab, and export everything into reusable JSON files!</p>
+          </div>
+          <button
+            onClick={onStart}
+            className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black uppercase tracking-wider rounded-2xl transition shadow-xl glow-gold"
+          >
+            Back to Game Board
+          </button>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<JeopardyApp />);
+  </script>
+</body>
+</html>
