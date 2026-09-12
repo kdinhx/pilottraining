@@ -1225,8 +1225,8 @@
             {
               id: "c2_4",
               value: 800,
-              question: "In a turbine engine, ____ gauge measures the fan speed, while ____ measures the core speed.",
-              answer: "N1/EPR & N2",
+              question: "What is Type Certificate Data Sheet? Where can you find it?",
+              answer: "drs.faa.gov. It defines the approved design specifications, operating limits, and certification basis for a specific aircraft, engine, or propeller model. Think of it as the official birth certificate and rulebook that proves an aircraft design is airworthy",
               isDailyDouble: false
             },
             {
@@ -1307,8 +1307,8 @@
             {
               id: "c4_4",
               value: 800,
-              question: "There are four causes of turbulence. What are they?",
-              answer: "Mechanical Turbulence, Thermal (Convective) Turbulence, Frontal Turbulence, Wind Shear",
+              question: "What altitude can you find jet stream? What is the direction of jet stream?",
+              answer: "Typically occurring around 30,000 feet (9,100 meters) in elevation.  Within jet streams, the winds blow from west to east, but the band often shifts north and south because jet streams follow the boundaries between hot and cold air.",
               isDailyDouble: true
             },
             {
@@ -1396,17 +1396,275 @@
             {
               id: "c6_5",
               value: 500,
-              question: "What is the speed of the boundary layer at the surface?",
-              answer: "0",
+              question: "Between laminar flow and turbulent flow, which one will separate from the surface first?",
+              answer: "Laminar flow will separate from a surface much earlier and more easily than turbulent flow.",
               isDailyDouble: true
             }
           ]
         }
       ],
       finalJeopardy: {
-        category: "Notices to Airmen",
+        category: "Notice to Airmen",
         question: "How many types of NOTAMs? What are they?",
         answer: "7. International NOTAMs. Domestic NOTAMs. Civil NOTAMs. Military NOTAMs. FDC NOTAMs. Center Area NOTAMs. NOTAM (D)S Including (U) and (O) NOTAMs",
+        notes: ""
+      }
+    };
+
+    const COMMERCIAL_2_BOARD_DATA = {
+      title: "Commercial 2",
+      categories: [
+        {
+          id: "cat_1",
+          name: "Airspace & Regulations",
+          clues: [
+            {
+              id: "c1_1",
+              value: 200,
+              question: "Where do you need a transponder?",
+              answer: "ABC1030",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_2",
+              value: 400,
+              question: "What are the duration and returns of Aircraft Registration?",
+              answer: "7 years. 30FTDUC. 30 days after the owner's death. Foreign registration. Transfer of ownership. Destroyed (aircraft). U.S. citizenship revoked. Canceled",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_3",
+              value: 600,
+              question: "Can you fly into Class B airspace without a transponder?",
+              answer: "Yes. You can request a onetime permission to operate without a transponder at least one hour before your flight",
+              isDailyDouble: true
+            },
+            {
+              id: "c1_4",
+              value: 800,
+              question: "What are four elements of a common carrier?",
+              answer: "Holding out or willingness to. Transport persons or property. From place to place. For compensation",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_5",
+              value: 1000,
+              question: "What is part 125? ",
+              answer: "Private carriage. Operating certificate required. Airplane, 20 or more pax, more than 6000lbs payload",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_2",
+          name: "Aircraft Systems & Instruments",
+          clues: [
+            {
+              id: "c2_1",
+              value: 200,
+              question: "Does Piper Arrow have a temperature gauge? When does it need a temperature gauge?",
+              answer: "No. When it has a liquid-cooled engine",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_2",
+              value: 400,
+              question: "What is naturally aspirated? ",
+              answer: "Engine draws air into the cylinders solely through atmospheric pressure, without any forced induction. ",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_3",
+              value: 600,
+              question: "What are the components of the constant speed governor?",
+              answer: "Governor. Prop lever. Threaded shaft. Speeder Spring. Flyweights. Pilot valve. Oil sump. Engine oil pressure. Governer gear pump. Piston",
+              isDailyDouble: true
+            },
+            {
+              id: "c2_4",
+              value: 800,
+              question: "What is the different between turbocharge and supercharge?",
+              answer: "Turbocharged engines use exhaust gases to spin a turbine connected to a compressor. Supercharged engines also use forced induction, but the compressor is driven directly by the engine via a belt or shaft. This means boost is available instantly, giving instant, lag-free power.",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_5",
+              value: 1000,
+              question: "How does the emergency gear extension lever work?",
+              answer: "In the event of an emergency, the emergency gear extension lever can be operated to permit the high-pressure fluid in the cylinders to flow back to the reservoir and permit the landing gear to free fall ",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_3",
+          name: "Aerodynamics & Flight Principles",
+          clues: [
+            {
+              id: "c3_1",
+              value: 200,
+              question: "What are the different types of drag?",
+              answer: "Induced Drag – Generated as a byproduct of lift.  Parasite Drag – This drag occurs from all non-lifting components of an object moving through air and increases with speed. Form Drag. Skin Friction Drag. Interference Drag",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_2",
+              value: 400,
+              question: "What is the purpose of the stall strip?",
+              answer: "To force the inner part of an airplane wing to lose lift before the outer tips, which keeps the plane stable and easy to control",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_3",
+              value: 600,
+              question: "Why maneuvering speed changes with weight?",
+              answer: "When the aircraft is at a higher weight, it must maintain a higher angle of attack, to create enough lift to support the weight of the plane. Maintaining this higher AOA means that the aircraft is closer to the  critical angle of attack, therefore, causing the airplane to stall at a higher speed.   When the aircraft is at a lower weight, enough lift can be generated to support the plane at a lower angle  of attack. Therefore, you will be further from the critical angle of attack, and your stall speed will be decreased. ",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_4",
+              value: 800,
+              question: "How dihedral wings make the aircraft more laterally stable?",
+              answer: " Dihedral wings make the aircraft more laterally stable, meaning the aircraft is more stable in a bank. in  certain conditions, wind can cause the aircraft to roll into a sideslip. The sideslip changes where  the relative wind is coming from, therefore changing the AOA and lift of the wing. With the  lower wing having a higher AOA, it also has increased lift. The relative wind strikes under the wing that is lowered, which pushes it back up towards the level position.  ",
+              isDailyDouble: true
+            },
+            {
+              id: "c3_5",
+              value: 1000,
+              question: "What systems use hydraulic fluid in the Piper Arrow?",
+              answer: "Retractable landing gear and brake system",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_4",
+          name: "Aviation Weather & METARs",
+          clues: [
+            {
+              id: "c4_1",
+              value: 200,
+              question: "How can ice form?",
+              answer: "1. visible moisture 2. surface temperature below freezing",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_2",
+              value: 400,
+              question: "What are 3 kinds of structural icing?",
+              answer: "Clear, rime, mixed",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_3",
+              value: 600,
+              question: "What are different types of icing?",
+              answer: "Structural, instrument, induction, intake, carburetor",
+              isDailyDouble: true
+            },
+            {
+              id: "c4_4",
+              value: 800,
+              question: "What does ATIS, AWOS, ASOS stand for?",
+              answer: "ATIS- Automatic Terminal Information Service. AWOS- Automated Weather Observing System. ASOS- Automated Surface Observing System",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_5",
+              value: 1000,
+              question: "Which one is better, AWOS-3 or ASOS?",
+              answer: "None. Same level",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_5",
+          name: "Piper Arrow Systems",
+          clues: [
+            {
+              id: "c5_1",
+              value: 200,
+              question: "What is the full engine name of the Piper Arrow?",
+              answer: "Lycoming IO-360-C1C6",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_2",
+              value: 400,
+              question: "What is the purpose of the pressure switch?",
+              answer: "When the fluid pressure in the cylinders reaches 1800 psi, the pressure switch deactivates the hydraulic pump and the high pressure remaining in the cylinders is what keeps the gear in the retracted position. If the pressure in the cylinder falls below 1500 PSI, the pressure switch will activate the hydraulic pump to pump more fluid into the cylinder  ",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_3",
+              value: 600,
+              question: "Tell me about the fuel system of the Piper Arrow.",
+              answer: "2 tanks (total is 77gal, 72 usable, 50 at tab). Vent. Drain. Fuel selector valve. Firewall. Drain. Electric fuel pump. Engine driven fuel pump. Servo regulator. Fuel distributor. Fuel nozzle. Fuel flow gauge.",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_4",
+              value: 800,
+              question: "Tell me about the electrical system of the Piper Arrow.",
+              answer: "The primary electrical power source is a 14 volt, 60-amp (with air conditioning) or 70-amp (without air  conditioning) alternator, that is protected by an alternator control unit that incorporates a voltage regulator and an overvoltage relay. Secondary power is provided by a 12 volt, 35-amp battery. ",
+              isDailyDouble: true
+            },
+            {
+              id: "c5_5",
+              value: 1000,
+              question: "Tell me about the power plant of the Piper Arrow.",
+              answer: "4F HANDL. 4 cylinders. Fuel injected. Horizontal opposed. Air cooled. Naturally aspirated. Direct drive. Lycoming IO-360-C1C6",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_6",
+          name: "Advance",
+          clues: [
+            {
+              id: "c6_1",
+              value: 500,
+              question: "What is the most accurate weather report?",
+              answer: "PIREP",
+              isDailyDouble: false
+            },
+            {
+              id: "c6_2",
+              value: 500,
+              question: "During preflight, you find the Air Conditioner is not working. Can you fly? What is the legal process you have to do?",
+              answer: "INOP equipment 91.213. MEL TCDS KOMEL AD 91.205. 91.213(3) deactivate/ remove, placard \"inoperative\". Log in the maintainance logbook",
+              isDailyDouble: false
+            },
+            {
+              id: "c6_3",
+              value: 500,
+              question: "How does aircraft pressurization work?",
+              answer: "Ambient air is introduced into a compressor, which is usually the airplane's engine. As the air is compressed, it heats up rapidly. This heated air is sent through a cooling unit, like a fuel-air heat exchanger. Through ducting, this air is then introduced into the cabin.",
+              isDailyDouble: true
+            },
+            {
+              id: "c6_4",
+              value: 500,
+              question: "What is an outflow valve?",
+              answer: "Outflow valves regulate how quickly air is released from the cabin. Air comes into the cabin quicker than it's released, creating a high-pressure cabin environment.",
+              isDailyDouble: true
+            },
+            {
+              id: "c6_5",
+              value: 500,
+              question: "What are the three primary types of aviation oxygen delivery systems?",
+              answer: "The three primary types of aviation oxygen delivery systems are continuous flow, diluter demand, and pressure demand",
+              isDailyDouble: true
+            }
+          ]
+        }
+      ],
+      finalJeopardy: {
+        category: "Pressurization systems",
+        question: "What are the types of decompression? What is the most dangerous and why?",
+        answer: "Explosive Decompression, Rapid Decompression, Gradual Decompression. Lack of notice makes Gradual Decompression extremely dangerous.",
         notes: ""
       }
     };
@@ -1414,7 +1672,8 @@
     const BUILT_IN_PRESETS = [
       { id: 'preset_private_1', name: 'Private 1', data: INITIAL_BOARD_DATA },
       { id: 'preset_private_2', name: 'Private 2', data: PRIVATE_2_BOARD_DATA },
-      { id: 'preset_commercial_1', name: 'Commercial 1', data: COMMERCIAL_1_BOARD_DATA }
+      { id: 'preset_commercial_1', name: 'Commercial 1', data: COMMERCIAL_1_BOARD_DATA },
+      { id: 'preset_commercial_2', name: 'Commercial 2', data: COMMERCIAL_2_BOARD_DATA }
     ];
 
     // Clean strings for solo practice fuzzy-matching
@@ -1456,7 +1715,7 @@
       const [saveAsNameInput, setSaveAsNameInput] = useState("");
       
       const [savedBoards, setSavedBoards] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v9');
+        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v11');
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
@@ -1470,13 +1729,13 @@
       });
 
       const [activeBoardId, setActiveBoardId] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_active_board_id_v9');
+        const saved = localStorage.getItem('jeopardy_active_board_id_v11');
         if (saved && saved !== 'preset_pop_culture') return saved;
         return 'preset_private_1';
       });
 
       const [boardData, setBoardData] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v9');
+        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v11');
         if (saved) {
           try { 
             const parsed = JSON.parse(saved);
@@ -1488,7 +1747,7 @@
 
       // Save collection to localStorage whenever it changes
       useEffect(() => {
-        localStorage.setItem('jeopardy_saved_boards_collection_v9', JSON.stringify(savedBoards));
+        localStorage.setItem('jeopardy_saved_boards_collection_v11', JSON.stringify(savedBoards));
       }, [savedBoards]);
 
       // Players / Teams
@@ -1817,8 +2076,8 @@
       const handleSelectBoard = (boardItem) => {
         setBoardData(boardItem.data);
         setActiveBoardId(boardItem.id);
-        localStorage.setItem('jeopardy_active_board_id_v9', boardItem.id);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v9', JSON.stringify(boardItem.data));
+        localStorage.setItem('jeopardy_active_board_id_v11', boardItem.id);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v11', JSON.stringify(boardItem.data));
         
         // Reset in-game state for clean new match
         setAnsweredClues(new Set());
@@ -1852,8 +2111,8 @@
         setSavedBoards(updatedList);
         setActiveBoardId(newBoardId);
         setBoardData(newBoard.data);
-        localStorage.setItem('jeopardy_active_board_id_v9', newBoardId);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v9', JSON.stringify(newBoard.data));
+        localStorage.setItem('jeopardy_active_board_id_v11', newBoardId);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v11', JSON.stringify(newBoard.data));
         setSaveAsNameInput("");
         showToast(`Saved "${trimmed}" to your boards!`);
       };
@@ -2075,7 +2334,7 @@
                 onTriggerFileUpload={() => jsonBoardFileInputRef.current?.click()}
                 setBoardData={(newData) => {
                   setBoardData(newData);
-                  localStorage.setItem('jeopardy_custom_board_deluxe_v9', JSON.stringify(newData));
+                  localStorage.setItem('jeopardy_custom_board_deluxe_v10', JSON.stringify(newData));
                   // Also update active entry in savedBoards if user board
                   setSavedBoards(prev => prev.map(b => b.id === activeBoardId ? { ...b, name: newData.title || b.name, data: newData } : b));
                   showToast("Board and Final Jeopardy saved!");
