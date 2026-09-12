@@ -1687,7 +1687,7 @@
               id: "c1_2",
               value: 400,
               question: "What do you need to do for IPC?",
-              answer: "AC 61-98E",
+              answer: "AC 61-98E. ",
               isDailyDouble: false
             },
             {
@@ -1700,7 +1700,7 @@
             {
               id: "c1_4",
               value: 800,
-              question: "What is the name of the non-directional beacon (NDB) position at the final approach fix (FAF)?",
+              question: "What is the name of the non-directional beacon (NDB) positioned at the final approach fix (FAF)?",
               answer: "Compass Locator (LOM)",
               isDailyDouble: false
             },
@@ -1727,8 +1727,8 @@
             {
               id: "c2_2",
               value: 400,
-              question: "Cockpit display of traffic that is NOT intended to be used as a collision avoidance system and does not relieve the pilot’s responsibility to “see and avoid” other aircraft",
-              answer: "ADS-B",
+              question: "How does the conventional altimeter work?",
+              answer: "A standard altimeter contains a stack of sealed aneroid wafers with an internal pressure of 29.92\" Hg. These wafers expand and contract based on the static pressure inside the casing of the altimeter. This static air enters the casing through a tube attached to the static ports on your airplane. The chamber is otherwise sealed, so only static air from directly outside the airplane enters the chamber.",
               isDailyDouble: false
             },
             {
@@ -1748,7 +1748,7 @@
             {
               id: "c2_5",
               value: 1000,
-              question: "What approach minimums require an approved WAAS system or a certified barometric VNAV system?",
+              question: "What approach minimums require an approved WAAS system OR a certified barometric VNAV system?",
               answer: "LNAV/VNAV",
               isDailyDouble: false
             }
@@ -1775,7 +1775,7 @@
             {
               id: "c3_3",
               value: 600,
-              question: "What is LPV vs LNAV/VNAV?",
+              question: "What is the different between LPV and LNAV/VNAV?",
               answer: "LPV provides high-precision, ILS-like angular guidance down to lower minimums, while LNAV/VNAV offers standard linear lateral and vertical guidance with typically higher decision altitudes",
               isDailyDouble: false
             },
@@ -1783,7 +1783,7 @@
               id: "c3_4",
               value: 800,
               question: "How many Precision approach are there? What is it?",
-              answer: "ILS- Instrument Landing System. GBAS- Ground-Based Augmentation System ",
+              answer: "ILS- Instrument Landing System. GLS/ GBAS- Ground-Based Augmentation System ",
               isDailyDouble: true
             },
             {
@@ -1802,7 +1802,7 @@
             {
               id: "c4_1",
               value: 200,
-              question: "How can ice form?",
+              question: "What are the 2 ingredients for ice to form on airplane?",
               answer: "1. visible moisture 2. surface temperature below freezing",
               isDailyDouble: false
             },
@@ -1851,7 +1851,7 @@
               id: "c5_2",
               value: 400,
               question: "What are the G1000 components?",
-              answer: "Primary Flight Display. Multifunction Flight. Display Audio Panel. Attitude and Heading Reference System. Air Data Computer. Integrated Avionics Unit. Engine Airframe Interface Unit. Global Positioning System. Magnetometer Unit",
+              answer: "Primary Flight Display. Multifunction Flight Display. Audio Panel. Attitude and Heading Reference System. Air Data Computer. Integrated Avionics Unit. Engine Airframe Interface Unit. Global Positioning System. Magnetometer Unit",
               isDailyDouble: false
             },
             {
@@ -1892,7 +1892,7 @@
               id: "c6_2",
               value: 500,
               question: "What is Scaling vs Integrity of a LPV?",
-              answer: "Scaling- Linear and Angular Tapering: As your aircraft gets closer to the runway, your navigation display (Course Deviation Indicator) becomes more sensitive. Integrity- Integrity means the system checks its own accuracy in real time. It knows instantly if a satellite error occurs.",
+              answer: "Scaling- Angular Tapering: As your aircraft gets closer to the runway, your navigation display (Course Deviation Indicator) becomes more sensitive. Integrity- Integrity means the system checks its own accuracy in real time. It knows instantly if a satellite error occurs.",
               isDailyDouble: false
             },
             {
@@ -1922,7 +1922,7 @@
       finalJeopardy: {
         category: "Notice to Airmen",
         question: "How many types of NOTAMs? What are they?",
-        answer: "7. International NOTAMs. Domestic NOTAMs. Civil NOTAMs. Military NOTAMs. FDC NOTAMs. Center Area NOTAMs. NOTAM (D)S Including (U) and (O) NOTAMs",
+        answer: "7. International NOTAMs. Domestic NOTAMs. Civil NOTAMs. Military NOTAMs. FDC NOTAMs. Center Area NOTAMs. NOTAM (D) Including (U) and (O) NOTAMs",
         notes: ""
       }
     };
@@ -1974,7 +1974,7 @@
       const [saveAsNameInput, setSaveAsNameInput] = useState("");
       
       const [savedBoards, setSavedBoards] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v12');
+        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v13');
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
@@ -1988,13 +1988,13 @@
       });
 
       const [activeBoardId, setActiveBoardId] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_active_board_id_v12');
+        const saved = localStorage.getItem('jeopardy_active_board_id_v13');
         if (saved && saved !== 'preset_pop_culture') return saved;
         return 'preset_private_1';
       });
 
       const [boardData, setBoardData] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v12');
+        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v13');
         if (saved) {
           try { 
             const parsed = JSON.parse(saved);
@@ -2006,7 +2006,7 @@
 
       // Save collection to localStorage whenever it changes
       useEffect(() => {
-        localStorage.setItem('jeopardy_saved_boards_collection_v12', JSON.stringify(savedBoards));
+        localStorage.setItem('jeopardy_saved_boards_collection_v13', JSON.stringify(savedBoards));
       }, [savedBoards]);
 
       // Players / Teams
@@ -2335,8 +2335,8 @@
       const handleSelectBoard = (boardItem) => {
         setBoardData(boardItem.data);
         setActiveBoardId(boardItem.id);
-        localStorage.setItem('jeopardy_active_board_id_v12', boardItem.id);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v12', JSON.stringify(boardItem.data));
+        localStorage.setItem('jeopardy_active_board_id_v13', boardItem.id);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v13', JSON.stringify(boardItem.data));
         
         // Reset in-game state for clean new match
         setAnsweredClues(new Set());
@@ -2370,8 +2370,8 @@
         setSavedBoards(updatedList);
         setActiveBoardId(newBoardId);
         setBoardData(newBoard.data);
-        localStorage.setItem('jeopardy_active_board_id_v12', newBoardId);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v12', JSON.stringify(newBoard.data));
+        localStorage.setItem('jeopardy_active_board_id_v13', newBoardId);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v13', JSON.stringify(newBoard.data));
         setSaveAsNameInput("");
         showToast(`Saved "${trimmed}" to your boards!`);
       };
@@ -2593,7 +2593,7 @@
                 onTriggerFileUpload={() => jsonBoardFileInputRef.current?.click()}
                 setBoardData={(newData) => {
                   setBoardData(newData);
-                  localStorage.setItem('jeopardy_custom_board_deluxe_v12', JSON.stringify(newData));
+                  localStorage.setItem('jeopardy_custom_board_deluxe_v13', JSON.stringify(newData));
                   // Also update active entry in savedBoards if user board
                   setSavedBoards(prev => prev.map(b => b.id === activeBoardId ? { ...b, name: newData.title || b.name, data: newData } : b));
                   showToast("Board and Final Jeopardy saved!");
