@@ -1669,11 +1669,270 @@
       }
     };
 
+    const INSTRUMENT_1_BOARD_DATA = {
+      title: "Instrument 1",
+      categories: [
+        {
+          id: "cat_1",
+          name: "Airspace & Regulations",
+          clues: [
+            {
+              id: "c1_1",
+              value: 200,
+              question: "What do you need to do to maintain Instrument currency?",
+              answer: "6HITS",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_2",
+              value: 400,
+              question: "What do you need to do for IPC?",
+              answer: "AC 61-98E",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_3",
+              value: 600,
+              question: "What are the 4 components of the ILS?",
+              answer: " Localizer, Glideslope, Marker Beacons (or DME), and the Approach Lighting System",
+              isDailyDouble: true
+            },
+            {
+              id: "c1_4",
+              value: 800,
+              question: "What is the name of the non-directional beacon (NDB) position at the final approach fix (FAF)?",
+              answer: "Compass Locator (LOM)",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_5",
+              value: 1000,
+              question: "How many medical certificates are there? How long does it last? What is the duration of the privileges?",
+              answer: "First-Class: Required for airline transport pilots and major airline captains. Valid for 12 months (under age 40) or 6 months (age 40 and older). Second-Class: Required for commercial operations like cargo or charter flying. Valid for 12 months regardless of age. Third-Class: Required for private, recreational, and student pilots. Valid for 60 months (under age 40) or 24 months (age 40 and older)",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_2",
+          name: "Aircraft Systems & Instruments/ IAP",
+          clues: [
+            {
+              id: "c2_1",
+              value: 200,
+              question: "What is \"sensitive\" and \"non-sensitive\" altimeters?",
+              answer: "• Non-Sensitive altimeters have a 1000-foot scale (200-foot tick marks) as their most precise display. \t• Sensitive altimeters have a 100-foot scale (20-foot tick marks) as their most precise display. \t\t○ The sensitive altimeter in \"glass cockpit\" displays go even further, often having 1-foot resolution on a digital read-out.",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_2",
+              value: 400,
+              question: "Cockpit display of traffic that is NOT intended to be used as a collision avoidance system and does not relieve the pilot’s responsibility to “see and avoid” other aircraft",
+              answer: "ADS-B",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_3",
+              value: 600,
+              question: "How many VOR test- 91.171 are there? What is it?",
+              answer: "7. VOT (+-4) 180 TO 360 FROM. Repair Station (+-4). Ground checkpoint (+-4). Airborn checkpoint (+-6). Dual VOR cross-check (=<4). Above a prominent Ground Landmark (+-6). 20nm on a selected radial from a VOR at low altitude (+-6)",
+              isDailyDouble: true
+            },
+            {
+              id: "c2_4",
+              value: 800,
+              question: "What approach minimums require WAAS?",
+              answer: "LPV and LP",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_5",
+              value: 1000,
+              question: "What approach minimums require an approved WAAS system or a certified barometric VNAV system?",
+              answer: "LNAV/VNAV",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_3",
+          name: "Instrument Approach Plate",
+          clues: [
+            {
+              id: "c3_1",
+              value: 200,
+              question: "What is FAF vs FAP?",
+              answer: "FAF (X) for non-precision. FAP (lightning) for precision where pilot maintain IAF altitude and catch the glide slope",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_2",
+              value: 400,
+              question: "What is glideslope vs glidepath?",
+              answer: "Glideslope for ILS when you have a glide slope station on the ground. Glide path for GPS when it is artificially created to guide pilot down",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_3",
+              value: 600,
+              question: "What is LPV vs LNAV/VNAV?",
+              answer: "LPV provides high-precision, ILS-like angular guidance down to lower minimums, while LNAV/VNAV offers standard linear lateral and vertical guidance with typically higher decision altitudes",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_4",
+              value: 800,
+              question: "How many Precision approach are there? What is it?",
+              answer: "ILS- Instrument Landing System. GBAS- Ground-Based Augmentation System ",
+              isDailyDouble: true
+            },
+            {
+              id: "c3_5",
+              value: 1000,
+              question: "What are Approaches with vertical guidance (APV)?",
+              answer: "LPV, LNAV/VNAV",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_4",
+          name: "Aviation Weather & METARs",
+          clues: [
+            {
+              id: "c4_1",
+              value: 200,
+              question: "How can ice form?",
+              answer: "1. visible moisture 2. surface temperature below freezing",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_2",
+              value: 400,
+              question: "What are 3 kinds of structural icing?",
+              answer: "Clear, rime, mixed",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_3",
+              value: 600,
+              question: "What are different types of icing?",
+              answer: "Structural, instrument, induction, intake, carburetor",
+              isDailyDouble: true
+            },
+            {
+              id: "c4_4",
+              value: 800,
+              question: "What does ATIS, AWOS, ASOS stand for?",
+              answer: "ATIS- Automatic Terminal Information Service. AWOS- Automated Weather Observing System. ASOS- Automated Surface Observing System",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_5",
+              value: 1000,
+              question: "Which one is better, AWOS-3 or ASOS?",
+              answer: "None. Same level",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_5",
+          name: "Piper Archer Systems",
+          clues: [
+            {
+              id: "c5_1",
+              value: 200,
+              question: "What is the full engine name of the Piper Archer III?",
+              answer: "Lycoming IO-360-A4M",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_2",
+              value: 400,
+              question: "What are the G1000 components?",
+              answer: "Primary Flight Display. Multifunction Flight. Display Audio Panel. Attitude and Heading Reference System. Air Data Computer. Integrated Avionics Unit. Engine Airframe Interface Unit. Global Positioning System. Magnetometer Unit",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_3",
+              value: 600,
+              question: "Tell me about the fuel system of the Piper Archer.",
+              answer: "For fuel injected- 2 tanks (total is 50gal, 48 usable, 34 at tab). Vent. Drain. Fuel selector valve. Firewall. Drain. Electric fuel pump. Engine driven fuel pump. Servo regulator. Fuel distributor. Fuel nozzle. Fuel flow gauge.",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_4",
+              value: 800,
+              question: "Tell me about the electrical system of the Piper Archer.",
+              answer: "The primary electrical power source is a 28 volt, 60-amp (with air conditioning) or 70-amp (without air conditioning) alternator, that is protected by an alternator control unit that incorporates a voltage regulator and an overvoltage relay. Secondary power is provided by a 24 volt, 35-amp battery. ",
+              isDailyDouble: true
+            },
+            {
+              id: "c5_5",
+              value: 1000,
+              question: "Tell me about the power plant of the Piper Archer.",
+              answer: "4F HANDL. 4 cylinders. Fuel injected. Horizontal opposed. Air cooled. Naturally aspirated. Direct drive. Lycoming IO-360-A4M",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_6",
+          name: "Advance",
+          clues: [
+            {
+              id: "c6_1",
+              value: 500,
+              question: "Eight common vestibular and visual illusions that can cause spatial disorientation during flight",
+              answer: "ICE FLAGS",
+              isDailyDouble: false
+            },
+            {
+              id: "c6_2",
+              value: 500,
+              question: "What is Scaling vs Integrity of a LPV?",
+              answer: "Scaling- Linear and Angular Tapering: As your aircraft gets closer to the runway, your navigation display (Course Deviation Indicator) becomes more sensitive. Integrity- Integrity means the system checks its own accuracy in real time. It knows instantly if a satellite error occurs.",
+              isDailyDouble: false
+            },
+            {
+              id: "c6_3",
+              value: 500,
+              question: "Why sometimes you see a temperature restriction on IAP?",
+              answer: "Baro-VNAV Limitation: Found on RNAV (GPS) or RNAV (RNP) approaches. It tells you that barometric vertical navigation systems cannot be used if the temperature drops below a specific limit.",
+              isDailyDouble: true
+            },
+            {
+              id: "c6_4",
+              value: 500,
+              question: "What is the system ensuring the integrity of the GPS signal? Without it, you cannot rely on the GPS for safe navigation.",
+              answer: "RAIM (Receiver Autonomous Integrity Monitoring)",
+              isDailyDouble: true
+            },
+            {
+              id: "c6_5",
+              value: 500,
+              question: "What is essentially RNAV with a higher level of precision and safety assurance? It’s crucial for advanced procedures like curved approaches or operations in challenging terrain.",
+              answer: "RNP (Required Navigation Performance)",
+              isDailyDouble: true
+            }
+          ]
+        }
+      ],
+      finalJeopardy: {
+        category: "Notice to Airmen",
+        question: "How many types of NOTAMs? What are they?",
+        answer: "7. International NOTAMs. Domestic NOTAMs. Civil NOTAMs. Military NOTAMs. FDC NOTAMs. Center Area NOTAMs. NOTAM (D)S Including (U) and (O) NOTAMs",
+        notes: ""
+      }
+    };
+
     const BUILT_IN_PRESETS = [
       { id: 'preset_private_1', name: 'Private 1', data: INITIAL_BOARD_DATA },
       { id: 'preset_private_2', name: 'Private 2', data: PRIVATE_2_BOARD_DATA },
       { id: 'preset_commercial_1', name: 'Commercial 1', data: COMMERCIAL_1_BOARD_DATA },
-      { id: 'preset_commercial_2', name: 'Commercial 2', data: COMMERCIAL_2_BOARD_DATA }
+      { id: 'preset_commercial_2', name: 'Commercial 2', data: COMMERCIAL_2_BOARD_DATA },
+      { id: 'preset_instrument_1', name: 'Instrument 1', data: INSTRUMENT_1_BOARD_DATA }
     ];
 
     // Clean strings for solo practice fuzzy-matching
@@ -1715,7 +1974,7 @@
       const [saveAsNameInput, setSaveAsNameInput] = useState("");
       
       const [savedBoards, setSavedBoards] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v11');
+        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v12');
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
@@ -1729,13 +1988,13 @@
       });
 
       const [activeBoardId, setActiveBoardId] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_active_board_id_v11');
+        const saved = localStorage.getItem('jeopardy_active_board_id_v12');
         if (saved && saved !== 'preset_pop_culture') return saved;
         return 'preset_private_1';
       });
 
       const [boardData, setBoardData] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v11');
+        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v12');
         if (saved) {
           try { 
             const parsed = JSON.parse(saved);
@@ -1747,7 +2006,7 @@
 
       // Save collection to localStorage whenever it changes
       useEffect(() => {
-        localStorage.setItem('jeopardy_saved_boards_collection_v11', JSON.stringify(savedBoards));
+        localStorage.setItem('jeopardy_saved_boards_collection_v12', JSON.stringify(savedBoards));
       }, [savedBoards]);
 
       // Players / Teams
@@ -2076,8 +2335,8 @@
       const handleSelectBoard = (boardItem) => {
         setBoardData(boardItem.data);
         setActiveBoardId(boardItem.id);
-        localStorage.setItem('jeopardy_active_board_id_v11', boardItem.id);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v11', JSON.stringify(boardItem.data));
+        localStorage.setItem('jeopardy_active_board_id_v12', boardItem.id);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v12', JSON.stringify(boardItem.data));
         
         // Reset in-game state for clean new match
         setAnsweredClues(new Set());
@@ -2111,8 +2370,8 @@
         setSavedBoards(updatedList);
         setActiveBoardId(newBoardId);
         setBoardData(newBoard.data);
-        localStorage.setItem('jeopardy_active_board_id_v11', newBoardId);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v11', JSON.stringify(newBoard.data));
+        localStorage.setItem('jeopardy_active_board_id_v12', newBoardId);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v12', JSON.stringify(newBoard.data));
         setSaveAsNameInput("");
         showToast(`Saved "${trimmed}" to your boards!`);
       };
@@ -2334,7 +2593,7 @@
                 onTriggerFileUpload={() => jsonBoardFileInputRef.current?.click()}
                 setBoardData={(newData) => {
                   setBoardData(newData);
-                  localStorage.setItem('jeopardy_custom_board_deluxe_v10', JSON.stringify(newData));
+                  localStorage.setItem('jeopardy_custom_board_deluxe_v12', JSON.stringify(newData));
                   // Also update active entry in savedBoards if user board
                   setSavedBoards(prev => prev.map(b => b.id === activeBoardId ? { ...b, name: newData.title || b.name, data: newData } : b));
                   showToast("Board and Final Jeopardy saved!");
