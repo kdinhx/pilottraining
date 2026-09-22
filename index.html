@@ -1927,12 +1927,271 @@
       }
     };
 
+    const INSTRUMENT_2_BOARD_DATA = {
+      title: "Instrument 2",
+      categories: [
+        {
+          id: "cat_1",
+          name: "Airspace & Regulations",
+          clues: [
+            {
+              id: "c1_1",
+              value: 200,
+              question: "What are VOR limitations?",
+              answer: "Line of sight, reverse sensing, cone of confusion",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_2",
+              value: 400,
+              question: "What acronym do pilots usually use to copy ATC IFR clearance?",
+              answer: "CRAFT",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_3",
+              value: 600,
+              question: "What are the facility types of VOR? ",
+              answer: "VOR. VORTAC. VOR/DME",
+              isDailyDouble: true
+            },
+            {
+              id: "c1_4",
+              value: 800,
+              question: "What is MON VOR?",
+              answer: "Minimum Operational Network is a backup ground-based navigation system managed by the Federal Aviation Administration (FAA) for aircraft if satellite navigation like GPS fails",
+              isDailyDouble: false
+            },
+            {
+              id: "c1_5",
+              value: 1000,
+              question: "What are the names of the legacy standard service volume of a VOR? ",
+              answer: "Terminal (T), Low (L), and High (H)",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_2",
+          name: "Aircraft Systems & Instruments/ IAP",
+          clues: [
+            {
+              id: "c2_1",
+              value: 200,
+              question: "During a hold, if you are 5 degrees off on inbound, what the outbound correction should be?",
+              answer: "15 degrees. 3 times the inbound wind correction on the outbound.",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_2",
+              value: 400,
+              question: "What directly controls the autopilot? Pilot or Flight Director?",
+              answer: "Flight Director controls Autopilot. Pilot controls the Flight Director",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_3",
+              value: 600,
+              question: "Why do you need a temperature gauge in a steam gauge airplane?",
+              answer: "To get the TAS",
+              isDailyDouble: true
+            },
+            {
+              id: "c2_4",
+              value: 800,
+              question: "When are you established on an approach?",
+              answer: " When the CDI is \"off the wall\", starts moving in",
+              isDailyDouble: false
+            },
+            {
+              id: "c2_5",
+              value: 1000,
+              question: "When can you go miss on an IAP?",
+              answer: "At the MAP",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_3",
+          name: "Instrument Approach Plate",
+          clues: [
+            {
+              id: "c3_1",
+              value: 200,
+              question: "When can you climb when going missed?",
+              answer: "You can start immediately. Some approaches you can't until MAP",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_2",
+              value: 400,
+              question: "Can you shoot an ILS approach without loading the approach on GPS?",
+              answer: "Yes, just simply load and verify the ILS freq and follow it",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_3",
+              value: 600,
+              question: "When can you descend when circling?",
+              answer: "When you turn base/ a normal descent to runway can be made",
+              isDailyDouble: false
+            },
+            {
+              id: "c3_4",
+              value: 800,
+              question: "What type of IAP you usually can find TAA? What type of IAP you usually can find MSA? ",
+              answer: "Usually, TAA- GPS (Satellite base). MSA- ILS/LOC/VOR/NDB (Ground base) ",
+              isDailyDouble: true
+            },
+            {
+              id: "c3_5",
+              value: 1000,
+              question: "What are the purposes of TAA? MSA?",
+              answer: "TAA- in lost comm, usually can start descent 30NM out from the assigned fix to follow the step down. MSA- minimum safety altitude- emergency altitude, at least 1,000 feet above obstacles, for lost comm, gets lost, or suffers an in-flight emergency",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_4",
+          name: "Pilots Cafe 1",
+          clues: [
+            {
+              id: "c4_1",
+              value: 200,
+              question: "What are the required reports under IFR?",
+              answer: "MARVELOUS VFR C500",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_2",
+              value: 400,
+              question: "What are the max holding speeds in a hold? ",
+              answer: "6,000’ or below- 200kts. 6001 to 14,000- 230 kts. 14,001 and above- 265 kts",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_3",
+              value: 600,
+              question: "What are the lost com procedures?",
+              answer: "MEA. AVEF",
+              isDailyDouble: true
+            },
+            {
+              id: "c4_4",
+              value: 800,
+              question: "When don't you have to fly a procedure turn?",
+              answer: "SHARP TT",
+              isDailyDouble: false
+            },
+            {
+              id: "c4_5",
+              value: 1000,
+              question: "What is the different between Procedure Turn (PT) and Hold in lieu of a Procedure Turn (HILPT)? ",
+              answer: "A procedure turn uses a traditional barbed ground track (such as a 45/180 or teardrop) to reverse direction, whereas a hold in lieu of a procedure turn (HILPT) uses a published racetrack holding pattern to accomplish the course reversal",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_5",
+          name: "Pilots cafe 2",
+          clues: [
+            {
+              id: "c5_1",
+              value: 200,
+              question: "When can you descend below MDA / DA? (§91.175)",
+              answer: "Normal rate of descent using normal maneuvers. not less than the visibility prescribed in the standard instrument approach. At least one visual references for the intended runway",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_2",
+              value: 400,
+              question: "When can you descend to 100 feet above TDZE?",
+              answer: "When you see the approach light system",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_3",
+              value: 600,
+              question: "When can you descend below 100 feet above TDZE?",
+              answer: " When you see the red terminating bars or the red side row bars are also distinctly visible and identifiable.",
+              isDailyDouble: false
+            },
+            {
+              id: "c5_4",
+              value: 800,
+              question: "What is the purpose of the Visual Descent Point (VDP)?",
+              answer: "A defined point on the final approach course of a non-precision straight-in approach procedure from which normal descent  from the MDA to the runway touchdown point may begin, provided adequate visual reference is established. ",
+              isDailyDouble: true
+            },
+            {
+              id: "c5_5",
+              value: 1000,
+              question: "How do you calculate Rate of Descent for a 3º Glide Path? How far can you start a Descent for a 3º Glide Path?",
+              answer: "VS (fpm) = Ground Speed X 5. TOD = Altitude to lose (ft) / 300",
+              isDailyDouble: false
+            }
+          ]
+        },
+        {
+          id: "cat_6",
+          name: "Advance",
+          clues: [
+            {
+              id: "c6_1",
+              value: 500,
+              question: "When can you use ASMUC FIX MINIMUMS on VOR RWY 36 VALDOSTA RGNL(VLD)?",
+              answer: "When you have GPS that can identify ASMUC waypoint",
+              isDailyDouble: false
+            },
+            {
+              id: "c6_2",
+              value: 500,
+              question: "When can you use SHOGI FIX MINIMUMS on ILS Z or LOC Z RWY 19 WAYCROSS-WARE COUNTY(AYS)?",
+              answer: "GPS waypoint or intersection using DUAL VOR RECEIVERS",
+              isDailyDouble: false
+            },
+            {
+              id: "c6_3",
+              value: 500,
+              question: "Why there are ILS Y/ LOC Y RWY 19 and ILS Z/ LOC Z RWY 19 at WAYCROSS-WARE COUNTY(AYS)?",
+              answer: "Different requirements/minimums",
+              isDailyDouble: true
+            },
+            {
+              id: "c6_4",
+              value: 500,
+              question: "You are south of RATOC setting up for ILS or LOC RWY 2 at W H 'BUD' BARRON (DBN). ATC said \"you are cleared for the ILS 2 to Dublin\". Do you need to do a procedure turn at RATOC?",
+              answer: "Yes. You were not \"cleared for a straight in for the ILS 2 to Dublin\"",
+              isDailyDouble: true
+            },
+            {
+              id: "c6_5",
+              value: 500,
+              question: "How many ways can you identify the FAF on ILS or LOC RWY 6 at BIRMINGHAM-SHUTTLESWORTH INTL (BHM)? ",
+              answer: "BH LOM. MCDEN INT. RADAR. 2121 on Glideslope. 4.5NM from the thresh hold",
+              isDailyDouble: true
+            }
+          ]
+        }
+      ],
+      finalJeopardy: {
+        category: "ATC unpublished hold",
+        question: "You are 20NM North of Athen VOR. ATC gives you a clearance \"Night train 306, Hold Southeast of 10 DME from Athen VOR on 320 radial\". Draw your position and the hold. What entry you will do to enter the hold?",
+        answer: "Parallel entry",
+        notes: ""
+      }
+    };
+
     const BUILT_IN_PRESETS = [
       { id: 'preset_private_1', name: 'Private 1', data: INITIAL_BOARD_DATA },
       { id: 'preset_private_2', name: 'Private 2', data: PRIVATE_2_BOARD_DATA },
       { id: 'preset_commercial_1', name: 'Commercial 1', data: COMMERCIAL_1_BOARD_DATA },
       { id: 'preset_commercial_2', name: 'Commercial 2', data: COMMERCIAL_2_BOARD_DATA },
-      { id: 'preset_instrument_1', name: 'Instrument 1', data: INSTRUMENT_1_BOARD_DATA }
+      { id: 'preset_instrument_1', name: 'Instrument 1', data: INSTRUMENT_1_BOARD_DATA },
+      { id: 'preset_instrument_2', name: 'Instrument 2', data: INSTRUMENT_2_BOARD_DATA }
     ];
 
     // Clean strings for solo practice fuzzy-matching
@@ -1974,7 +2233,7 @@
       const [saveAsNameInput, setSaveAsNameInput] = useState("");
       
       const [savedBoards, setSavedBoards] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v13');
+        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v14');
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
@@ -1988,13 +2247,13 @@
       });
 
       const [activeBoardId, setActiveBoardId] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_active_board_id_v13');
+        const saved = localStorage.getItem('jeopardy_active_board_id_v14');
         if (saved && saved !== 'preset_pop_culture') return saved;
         return 'preset_private_1';
       });
 
       const [boardData, setBoardData] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v13');
+        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v14');
         if (saved) {
           try { 
             const parsed = JSON.parse(saved);
@@ -2006,7 +2265,7 @@
 
       // Save collection to localStorage whenever it changes
       useEffect(() => {
-        localStorage.setItem('jeopardy_saved_boards_collection_v13', JSON.stringify(savedBoards));
+        localStorage.setItem('jeopardy_saved_boards_collection_v14', JSON.stringify(savedBoards));
       }, [savedBoards]);
 
       // Players / Teams
