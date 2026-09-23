@@ -907,7 +907,7 @@
               id: "c1_1",
               value: 200,
               question: "What is the military intercept squawk code?",
-              answer: "7777",
+              answer: "7700",
               isDailyDouble: false
             },
             {
@@ -2233,7 +2233,7 @@
       const [saveAsNameInput, setSaveAsNameInput] = useState("");
       
       const [savedBoards, setSavedBoards] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v14');
+        const saved = localStorage.getItem('jeopardy_saved_boards_collection_v15');
         if (saved) {
           try {
             const parsed = JSON.parse(saved);
@@ -2247,13 +2247,13 @@
       });
 
       const [activeBoardId, setActiveBoardId] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_active_board_id_v14');
+        const saved = localStorage.getItem('jeopardy_active_board_id_v15');
         if (saved && saved !== 'preset_pop_culture') return saved;
         return 'preset_private_1';
       });
 
       const [boardData, setBoardData] = useState(() => {
-        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v14');
+        const saved = localStorage.getItem('jeopardy_custom_board_deluxe_v15');
         if (saved) {
           try { 
             const parsed = JSON.parse(saved);
@@ -2265,7 +2265,7 @@
 
       // Save collection to localStorage whenever it changes
       useEffect(() => {
-        localStorage.setItem('jeopardy_saved_boards_collection_v14', JSON.stringify(savedBoards));
+        localStorage.setItem('jeopardy_saved_boards_collection_v15', JSON.stringify(savedBoards));
       }, [savedBoards]);
 
       // Players / Teams
@@ -2594,8 +2594,8 @@
       const handleSelectBoard = (boardItem) => {
         setBoardData(boardItem.data);
         setActiveBoardId(boardItem.id);
-        localStorage.setItem('jeopardy_active_board_id_v13', boardItem.id);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v13', JSON.stringify(boardItem.data));
+        localStorage.setItem('jeopardy_active_board_id_v15', boardItem.id);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v15', JSON.stringify(boardItem.data));
         
         // Reset in-game state for clean new match
         setAnsweredClues(new Set());
@@ -2629,8 +2629,8 @@
         setSavedBoards(updatedList);
         setActiveBoardId(newBoardId);
         setBoardData(newBoard.data);
-        localStorage.setItem('jeopardy_active_board_id_v13', newBoardId);
-        localStorage.setItem('jeopardy_custom_board_deluxe_v13', JSON.stringify(newBoard.data));
+        localStorage.setItem('jeopardy_active_board_id_v15', newBoardId);
+        localStorage.setItem('jeopardy_custom_board_deluxe_v15', JSON.stringify(newBoard.data));
         setSaveAsNameInput("");
         showToast(`Saved "${trimmed}" to your boards!`);
       };
@@ -2688,6 +2688,26 @@
         a.href = url;
         a.download = `${boardItem.name.toLowerCase().replace(/[^a-z0-9]/g, '_')}_board.json`;
         a.click();
+      };
+
+      const handleDownloadApp = () => {
+        // Clone the document to safely manipulate it before downloading
+        const docClone = document.documentElement.cloneNode(true);
+        // Clear React's rendered output so it boots cleanly when opened locally
+        const rootDiv = docClone.querySelector('#root');
+        if (rootDiv) rootDiv.innerHTML = '';
+        
+        const htmlContent = "<!DOCTYPE html>\n" + docClone.outerHTML;
+        const blob = new Blob([htmlContent], { type: "text/html" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Jeopardy_Studio_Live.html";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast("Game downloaded! You can now open it locally.");
       };
 
       return (
@@ -2828,6 +2848,15 @@
                   Rules
                 </button>
               </div>
+              
+              <button
+                onClick={handleDownloadApp}
+                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center space-x-1"
+                title="Download this entire application as a single HTML file to play offline"
+              >
+                <span>💾</span>
+                <span className="hidden lg:inline">Save App</span>
+              </button>
             </div>
           </header>
 
@@ -2852,7 +2881,7 @@
                 onTriggerFileUpload={() => jsonBoardFileInputRef.current?.click()}
                 setBoardData={(newData) => {
                   setBoardData(newData);
-                  localStorage.setItem('jeopardy_custom_board_deluxe_v13', JSON.stringify(newData));
+                  localStorage.setItem('jeopardy_custom_board_deluxe_v15', JSON.stringify(newData));
                   // Also update active entry in savedBoards if user board
                   setSavedBoards(prev => prev.map(b => b.id === activeBoardId ? { ...b, name: newData.title || b.name, data: newData } : b));
                   showToast("Board and Final Jeopardy saved!");
@@ -3177,13 +3206,19 @@
                   </div>
                 ) : (
                   <div className="my-auto flex flex-col items-center justify-center text-center px-4 py-6">
+                    {activeClue.image && (
+                      <img src={activeClue.image} alt="Clue reference" className="max-h-40 sm:max-h-56 lg:max-h-64 object-contain mx-auto mb-4 rounded-xl border-2 border-slate-700 shadow-xl" />
+                    )}
                     <p className="font-clue text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-100 leading-relaxed max-w-3xl text-clue-shadow">
                       "{activeClue.question}"
                     </p>
 
                     {isClueAnswerRevealed && (
                       <div className="mt-8 p-4 bg-emerald-950/80 border-2 border-emerald-500 rounded-2xl max-w-xl w-full">
-                        <span className="text-[10px] uppercase font-bold text-emerald-300 tracking-widest block">Official Response:</span>
+                        <span className="text-[10px] uppercase font-bold text-emerald-300 tracking-widest block mb-2">Official Response:</span>
+                        {activeClue.answerImage && (
+                          <img src={activeClue.answerImage} alt="Answer reference" className="max-h-40 sm:max-h-56 lg:max-h-64 object-contain mx-auto mb-3 rounded-xl border-2 border-emerald-600 shadow-xl" />
+                        )}
                         <h4 className="font-clue text-xl sm:text-2xl font-black text-white mt-1">
                           {activeClue.answer}
                         </h4>
@@ -3964,142 +3999,35 @@
                         />
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 2: EDIT FINAL JEOPARDY */}
-          {activeTab === 'final' && (
-            <div className="bg-slate-950 p-5 rounded-3xl border-2 border-amber-500/40 space-y-4 glow-gold">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <h3 className="text-base font-black text-amber-400 uppercase font-board tracking-wider flex items-center space-x-2">
-                  <span>★ Final Jeopardy Customization</span>
-                </h3>
-                <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/40 px-2.5 py-0.5 rounded-full font-mono">
-                  Saved with Board Export
-                </span>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
-                    Final Jeopardy Category Name:
-                  </label>
-                  <input
-                    type="text"
-                    value={board.finalJeopardy?.category || ""}
-                    onChange={(e) => {
-                      setBoard({
-                        ...board,
-                        finalJeopardy: { ...board.finalJeopardy, category: e.target.value }
-                      });
-                    }}
-                    placeholder="e.g. FAMOUS LANDMARKS, WORLD HISTORY..."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm font-bold text-amber-300 focus:outline-none focus:border-amber-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
-                    Final Clue / Question Prompt:
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={board.finalJeopardy?.question || ""}
-                    onChange={(e) => {
-                      setBoard({
-                        ...board,
-                        finalJeopardy: { ...board.finalJeopardy, question: e.target.value }
-                      });
-                    }}
-                    placeholder="Enter the comprehensive final clue presented to contestants..."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 font-clue focus:outline-none focus:border-blue-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
-                    Official Correct Final Answer:
-                  </label>
-                  <input
-                    type="text"
-                    value={board.finalJeopardy?.answer || ""}
-                    onChange={(e) => {
-                      setBoard({
-                        ...board,
-                        finalJeopardy: { ...board.finalJeopardy, answer: e.target.value }
-                      });
-                    }}
-                    placeholder="e.g. Mount Everest, William Shakespeare..."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm font-bold text-emerald-400 focus:outline-none focus:border-emerald-400"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-400 uppercase block mb-1">
-                    Host Notes / Context (Optional):
-                  </label>
-                  <input
-                    type="text"
-                    value={board.finalJeopardy?.notes || ""}
-                    onChange={(e) => {
-                      setBoard({
-                        ...board,
-                        finalJeopardy: { ...board.finalJeopardy, notes: e.target.value }
-                      });
-                    }}
-                    placeholder="e.g. Entered interstellar space in 2012."
-                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-300 focus:outline-none focus:border-blue-400"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: SAVED BOARDS SELECTOR */}
-          {activeTab === 'library' && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-400 uppercase">Available Boards in Storage</span>
-                <button
-                  onClick={onTriggerFileUpload}
-                  className="px-3 py-1.5 bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-700 text-xs font-bold rounded-xl transition"
-                >
-                  📂 Upload .JSON File
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-72 overflow-y-auto">
-                {savedBoards.map(b => (
-                  <div
-                    key={b.id}
-                    className={`p-3.5 rounded-2xl border flex flex-col justify-between space-y-2 ${
-                      activeBoardId === b.id
-                        ? 'bg-blue-950/80 border-amber-400'
-                        : 'bg-slate-950 border-slate-800'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-bold text-white">{b.name}</h4>
-                        {activeBoardId === b.id && (
-                          <span className="text-[10px] bg-emerald-500 text-slate-950 font-bold px-2 py-0.5 rounded-full">ACTIVE</span>
-                        )}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div>
+                        <label className="text-[10px] text-slate-400 uppercase block mb-1">Question Image URL (Optional)</label>
+                        <input
+                          type="text"
+                          placeholder="https://..."
+                          value={clue.image || ""}
+                          onChange={(e) => {
+                            const updated = { ...board };
+                            updated.categories[activeCat].clues[cIdx].image = e.target.value;
+                            setBoard(updated);
+                          }}
+                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-blue-300 outline-none focus:border-blue-400"
+                        />
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">
-                        {b.data?.categories?.map(c => c.name).join(', ') || ''}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-900">
-                      <button
-                        onClick={() => onSelectBoard(b)}
-                        className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-lg transition"
-                      >
-                        Load This Board
-                      </button>
+                      <div>
+                        <label className="text-[10px] text-emerald-400/80 uppercase block mb-1">Answer Image URL (Optional)</label>
+                        <input
+                          type="text"
+                          placeholder="https://..."
+                          value={clue.answerImage || ""}
+                          onChange={(e) => {
+                            const updated = { ...board };
+                            updated.categories[activeCat].clues[cIdx].answerImage = e.target.value;
+                            setBoard(updated);
+                          }}
+                          className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-emerald-300 outline-none focus:border-emerald-400"
+                        />
+                      </div>
                     </div>
                   </div>
                 ))}
